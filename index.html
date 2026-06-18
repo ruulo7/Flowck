@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Piezas — Flowck</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="sidebar"></div>
+
+<div class="main">
+  <div id="topbar"></div>
+
+  <div class="content-header">
+    <div class="page-header">
+      <h1 class="page-title">Piezas</h1>
+      <div class="page-actions">
+        <div class="search-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input type="text" id="searchInput" placeholder="Busca una pieza…">
+        </div>
+        <button class="btn btn-primary" id="newPieceBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+          Nueva
+        </button>
+      </div>
+    </div>
+
+    <div class="tabs" id="tabs">
+      <div class="tab-item active" data-tab="activas">Activas</div>
+      <div class="tab-item" data-tab="mitrabajo">Mi trabajo</div>
+      <div class="tab-item" data-tab="todas">Todas</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="table-wrap">
+      <table class="pieces-table">
+        <thead>
+          <tr>
+            <th class="col-img"></th>
+            <th class="col-name">Nombre</th>
+            <th class="col-canal col-filterable" id="filterHead-channel" onclick="openFilterMenu(event,'channel')">
+              <span class="th-inner">Canal<svg class="filter-chevron" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg><span class="th-filter-badge" id="badge-channel"></span></span>
+            </th>
+            <th class="col-camp col-filterable" id="filterHead-campaign" onclick="openFilterMenu(event,'campaign')">
+              <span class="th-inner">Campaña<svg class="filter-chevron" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg><span class="th-filter-badge" id="badge-campaign"></span></span>
+            </th>
+            <th class="col-client col-filterable" id="filterHead-cliente" style="display:none" onclick="openFilterMenu(event,'cliente')">
+              <span class="th-inner">Cliente<svg class="filter-chevron" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg><span class="th-filter-badge" id="badge-cliente"></span></span>
+            </th>
+            <th class="col-estado col-filterable" id="filterHead-status" onclick="openFilterMenu(event,'status')">
+              <span class="th-inner">Estado<svg class="filter-chevron" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg><span class="th-filter-badge" id="badge-status"></span></span>
+            </th>
+            <th class="col-pend col-filterable" id="filterHead-pendienteDe" onclick="openFilterMenu(event,'pendienteDe')">
+              <span class="th-inner">Pendiente de<svg class="filter-chevron" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg><span class="th-filter-badge" id="badge-pendienteDe"></span></span>
+            </th>
+            <th class="col-dead">Deadline</th>
+            <th class="col-act"></th>
+          </tr>
+        </thead>
+        <tbody id="piecesBody"></tbody>
+      </table>
+      <div id="emptyState" class="empty-state" style="display:none">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
+          <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+        </svg>
+        <p>No hay piezas que mostrar</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Block popover -->
+<div class="block-popover" id="blockPopover">
+  <div class="block-popover-header">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+      <path d="M12 9v4"/>
+      <path d="M12 17h.01"/>
+    </svg>
+    Bloqueo activo
+  </div>
+  <div style="font-size:12px;font-weight:600;color:#111;margin-bottom:8px;line-height:1.3" id="popPieceName"></div>
+  <div class="block-popover-reason" id="popReason"></div>
+  <div class="block-popover-meta">
+    Pendiente de: <strong id="popPending"></strong> &nbsp;·&nbsp; Deadline: <strong id="popDeadline"></strong>
+  </div>
+  <div class="block-popover-footer">
+    <a id="popViewLink" href="#" class="btn" style="font-size:12px;padding:5px 14px;background:#F87171;border-color:#F87171;color:#fff;">Ver bloqueo →</a>
+  </div>
+</div>
+
+<!-- Modal nueva pieza -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">Nueva pieza</span>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+
+    <!-- Nombre: siempre visible -->
+    <div class="form-group">
+      <label class="form-label">Nombre <span class="required-star">*</span></label>
+      <input class="form-input" id="fName" type="text" placeholder="Ej. Banner principal verano">
+    </div>
+
+    <!-- Canal + Campaña: siempre visibles -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Canal <span class="required-star">*</span></label>
+        <div class="select-wrap">
+          <button type="button" class="select-btn empty" id="fChannelBtn">
+            <span class="select-btn-content">Selecciona un canal</span>
+            <svg class="select-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Campaña <span class="form-label-optional">(opcional)</span></label>
+        <input class="form-input" id="fCampaign" type="text" placeholder="Ej. Verano 2025">
+      </div>
+    </div>
+
+    <!-- Cliente + Deadline: siempre visibles -->
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Cliente <span class="form-label-optional">(opcional)</span></label>
+        <input class="form-input" id="fCliente" type="text" placeholder="Ej. Acme Corp">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Deadline <span class="required-star">*</span></label>
+        <div class="cal-wrap">
+          <button type="button" class="cal-input-btn empty" id="calBtn">
+            <span class="cal-btn-text">Selecciona una fecha</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIN archivo: Asignado a + Brief -->
+    <div id="sectionNoFile">
+      <div class="form-group">
+        <label class="form-label">Asignado a <span class="form-label-optional">(opcional)</span></label>
+        <div class="select-wrap">
+          <button type="button" class="select-btn" id="fOwnerBtn">
+            <span class="select-btn-content">Sin asignar</span>
+            <svg class="select-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Brief <span class="form-label-optional">(opcional)</span></label>
+        <textarea class="form-textarea" id="fBrief" placeholder="Describe el objetivo, tono y referencias de la pieza…" style="min-height:70px"></textarea>
+      </div>
+    </div>
+
+    <hr class="form-separator">
+
+    <!-- Zona de archivo -->
+    <div id="fFileZone" class="modal-file-zone">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      <span>Arrastra o <strong style="color:var(--text-primary)">haz clic</strong> para subir el archivo creativo</span>
+      <span class="modal-file-zone-hint">PNG, JPG, MP4, PDF — opcional</span>
+      <input type="file" id="fFile" accept="image/*,video/*,.pdf" style="display:none">
+    </div>
+    <div id="fFilePreview" class="modal-file-preview" style="display:none">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;color:var(--text-secondary)"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+      <div class="modal-file-preview-info">
+        <span class="modal-file-preview-name" id="fFileNameLabel"></span>
+        <button type="button" class="modal-file-preview-replace" id="fFileReplace">Reemplazar archivo</button>
+      </div>
+      <button type="button" class="modal-file-preview-remove" id="fFileRemove" title="Quitar archivo">✕</button>
+    </div>
+
+    <!-- CON archivo: Copy -->
+    <div id="sectionWithFile" style="display:none">
+      <div class="form-group">
+        <label class="form-label">Copy <span class="form-label-optional">(opcional)</span></label>
+        <textarea class="form-textarea" id="fCopy" placeholder="Texto principal de la pieza creativa…" style="min-height:70px"></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="modalCancel">Cancelar</button>
+      <button class="btn btn-primary" id="modalSave" disabled>Crear solicitud</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal confirmación eliminar pieza -->
+<div class="modal-overlay" id="deleteModalOverlay">
+  <div class="modal" style="width:400px">
+    <div class="modal-header">
+      <span class="modal-title">Eliminar pieza</span>
+      <button class="modal-close" id="deleteModalClose">✕</button>
+    </div>
+    <p style="font-size:13.5px;color:var(--text-secondary);line-height:1.5;margin-bottom:4px">
+      ¿Confirmas que quieres eliminar esta pieza? Esta acción no se puede deshacer.
+    </p>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="deleteModalCancel">Cancelar</button>
+      <button class="btn btn-danger" id="deleteModalConfirm">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Row action dropdown (shared) -->
+<div class="dropdown-menu" id="actionDropdown">
+  <div class="dropdown-item" id="actionChangeStatus">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/>
+    </svg>
+    Cambiar estado
+  </div>
+  <div class="dropdown-item" id="actionEdit">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+    </svg>
+    Editar
+  </div>
+  <div class="dropdown-sep" id="actionSep"></div>
+  <div class="dropdown-item danger" id="actionDelete">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/>
+      <path d="M9 6V4h6v2"/>
+    </svg>
+    Eliminar pieza
+  </div>
+</div>
+
+<!-- Column filter dropdown (shared, populated by JS) -->
+<div class="filter-dropdown-menu" id="filterDropdown"></div>
+
+<!-- Status change sub-dropdown -->
+<div class="dropdown-menu" id="statusDropdown" style="min-width:175px">
+  <div class="dropdown-item" data-status="solicitada"><span class="badge solicitada">Solicitada</span></div>
+  <div class="dropdown-item" data-status="produccion"><span class="badge produccion">En producción</span></div>
+  <div class="dropdown-item" data-status="revision"><span class="badge revision">En revisión</span></div>
+  <div class="dropdown-item" data-status="aprobada"><span class="badge aprobada">Aprobada</span></div>
+  <div class="dropdown-item" data-status="publicada"><span class="badge publicada">Publicada</span></div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+  /* ── Init ──────────────────────────────────────── */
+  document.getElementById('sidebar').innerHTML = renderSidebar('piezas');
+  document.getElementById('topbar').innerHTML  = renderTopbar();
+
+  let currentTab    = 'activas';
+  let currentSearch = '';
+  let activePieceId = null;
+
+  /* ── Column filters state ──────────────────────── */
+  const columnFilters = { channel: [], status: [], campaign: [], pendienteDe: [], cliente: [] };
+  let currentFilterCol = null;
+
+  /* ── Render table ──────────────────────────────── */
+  function getFilteredPieces() {
+    let pieces = getPieces();
+    if (currentTab === 'activas')   pieces = pieces.filter(p => p.status !== 'publicada');
+    if (currentTab === 'mitrabajo') pieces = pieces.filter(p => p.pendienteDe === 'Julia');
+    if (currentSearch) {
+      const q = currentSearch.toLowerCase();
+      pieces = pieces.filter(p => p.name.toLowerCase().includes(q) || p.campaign.toLowerCase().includes(q));
+    }
+    if (columnFilters.channel.length)     pieces = pieces.filter(p => columnFilters.channel.includes(p.channel));
+    if (columnFilters.status.length)      pieces = pieces.filter(p => columnFilters.status.includes(p.status));
+    if (columnFilters.campaign.length)    pieces = pieces.filter(p => columnFilters.campaign.includes(p.campaign));
+    if (columnFilters.pendienteDe.length) pieces = pieces.filter(p => columnFilters.pendienteDe.includes(p.pendienteDe));
+    if (columnFilters.cliente.length)     pieces = pieces.filter(p => columnFilters.cliente.includes(p.cliente));
+    pieces = pieces.slice().sort((a, b) => {
+      if (!a.deadline && !b.deadline) return 0;
+      if (!a.deadline) return 1;
+      if (!b.deadline) return -1;
+      return a.deadline.localeCompare(b.deadline);
+    });
+    return pieces;
+  }
+
+  /* ── Column filter UI (búsqueda + checkboxes + Aplicar/Limpiar) ── */
+  let filterDraft = { col: null, selected: new Set() };
+
+  function escAttr(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function openFilterMenu(e, col) {
+    e.stopPropagation();
+    const menu = document.getElementById('filterDropdown');
+    if (menu.classList.contains('open') && currentFilterCol === col) {
+      menu.classList.remove('open');
+      currentFilterCol = null;
+      return;
+    }
+    currentFilterCol = col;
+    filterDraft = { col, selected: new Set(columnFilters[col] || []) };
+    menu.innerHTML = buildFilterContent(col);
+    const rect = e.currentTarget.getBoundingClientRect();
+    menu.style.minWidth = '230px';
+    menu.style.top  = (rect.bottom + 1) + 'px';
+    const menuW = 230;
+    menu.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - menuW - 8)) + 'px';
+    closeAll();
+    menu.classList.add('open');
+    const search = menu.querySelector('.filter-search-input');
+    if (search) search.focus();
+  }
+
+  function buildFilterContent(col) {
+    const pieces   = getPieces();
+    const selected = filterDraft.selected;
+
+    let present = [];
+    if (col === 'channel')         present = pieces.map(p => p.channel).filter(Boolean);
+    else if (col === 'status')     present = pieces.map(p => p.status).filter(Boolean);
+    else if (col === 'campaign')   present = pieces.map(p => p.campaign).filter(v => v && v !== '—');
+    else if (col === 'cliente')    present = pieces.map(p => p.cliente).filter(v => v && v.trim());
+    else if (col === 'pendienteDe')present = pieces.map(p => p.pendienteDe).filter(v => v && v !== '—');
+
+    let options = [...new Set(present)].map(v => ({
+      value: v,
+      label: col === 'channel' ? (CHANNEL_LABELS[v] || v) : (col === 'status' ? (STATUS_LABELS[v] || v) : v),
+    }));
+    if (col === 'status') {
+      /* Mismo orden que el subdropdown "Cambiar estado" de los ···, no alfabético. */
+      options.sort((a, b) => STATUS_ORDER.indexOf(a.value) - STATUS_ORDER.indexOf(b.value));
+    } else {
+      options.sort((a, b) => a.label.localeCompare(b.label));
+    }
+
+    const rowsHtml = options.map(o => {
+      const checked = selected.has(o.value) ? 'checked' : '';
+      let inner;
+      if (col === 'channel') inner = `${channelIcon(o.value)}<span>${o.label}</span>`;
+      else if (col === 'status') inner = statusBadge(o.value);
+      else inner = `<span>${o.label}</span>`;
+      return `<label class="filter-option-row" data-label="${escAttr(o.label.toLowerCase())}">
+        <input type="checkbox" value="${escAttr(o.value)}" ${checked} onchange="toggleFilterDraft(this.value, this.checked)">
+        ${inner}
+      </label>`;
+    }).join('') || `<div class="filter-empty">Sin opciones</div>`;
+
+    /* Solo Campaña y Cliente pueden acumular muchas opciones; el resto
+       son listas fijas/cortas y no necesitan buscador interno. */
+    const showSearch = col === 'campaign' || col === 'cliente';
+    const searchHtml = showSearch ? `
+      <div class="filter-search-wrap">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" class="filter-search-input" placeholder="Buscar opción…" oninput="onFilterSearchInput(this.value)">
+      </div>` : '';
+
+    return `
+      ${searchHtml}
+      <div class="filter-options-list" id="filterOptionsList">${rowsHtml}</div>
+      <div class="filter-panel-actions">
+        <button type="button" class="filter-btn-clear" onclick="clearFilterPanel()">Limpiar</button>
+        <button type="button" class="filter-btn-apply" onclick="applyFilterPanel()">Aplicar</button>
+      </div>`;
+  }
+
+  function onFilterSearchInput(q) {
+    const query = q.trim().toLowerCase();
+    document.querySelectorAll('#filterOptionsList .filter-option-row').forEach(row => {
+      row.style.display = (!query || row.dataset.label.includes(query)) ? 'flex' : 'none';
+    });
+  }
+
+  function toggleFilterDraft(value, checked) {
+    if (checked) filterDraft.selected.add(value);
+    else filterDraft.selected.delete(value);
+  }
+
+  function applyFilterPanel() {
+    if (!filterDraft.col) return;
+    columnFilters[filterDraft.col] = [...filterDraft.selected];
+    closeAll();
+    currentFilterCol = null;
+    renderTable();
+    updateFilterHeaders();
+  }
+
+  function clearFilterPanel() {
+    if (!filterDraft.col) return;
+    columnFilters[filterDraft.col] = [];
+    closeAll();
+    currentFilterCol = null;
+    renderTable();
+    updateFilterHeaders();
+  }
+
+  function updateFilterHeaders() {
+    const map = { channel:'filterHead-channel', status:'filterHead-status', campaign:'filterHead-campaign', pendienteDe:'filterHead-pendienteDe', cliente:'filterHead-cliente' };
+    Object.entries(map).forEach(([key, id]) => {
+      const th = document.getElementById(id);
+      const count = (columnFilters[key] || []).length;
+      if (th) th.classList.toggle('has-filter', count > 0);
+      const badge = document.getElementById('badge-' + key);
+      if (badge) badge.textContent = count > 0 ? String(count) : '';
+    });
+  }
+
+  function renderTable() {
+    const pieces     = getFilteredPieces();
+    const tbody      = document.getElementById('piecesBody');
+    const empty      = document.getElementById('emptyState');
+    const showCliente = getPieces().some(p => p.cliente && p.cliente.trim());
+    const clienteTh  = document.getElementById('filterHead-cliente');
+    if (clienteTh) clienteTh.style.display = showCliente ? '' : 'none';
+
+    if (pieces.length === 0) {
+      tbody.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = pieces.map(p => `
+      <tr data-id="${p.id}" onclick="goDetail(${p.id})">
+        <td class="col-img">
+          ${(p.image || p.thumbnail)
+            ? `<img class="cell-thumb" src="${p.image || p.thumbnail}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+               <div class="thumb-placeholder" style="display:none">
+                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                   <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+                   <polyline points="21 15 16 10 5 21"/>
+                 </svg>
+               </div>`
+            : `<div class="thumb-placeholder" style="display:flex">
+                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                   <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+                   <polyline points="21 15 16 10 5 21"/>
+                 </svg>
+               </div>`}
+        </td>
+        <td class="col-name"><span class="cell-name">${p.name}</span></td>
+        <td class="col-canal">${channelIcon(p.channel)}</td>
+        <td class="col-camp"><span class="cell-campaign">${p.campaign}</span></td>
+        ${showCliente ? `<td class="col-client"><span class="cell-campaign">${p.cliente || ''}</span></td>` : ''}
+        <td class="col-estado">
+          <div class="status-cell">
+            ${statusBadge(p.status)}
+            ${p.blocked ? blockBadge(p.id) : ''}
+          </div>
+        </td>
+        <td class="col-pend"><span class="cell-pending${(!p.pendienteDe || p.pendienteDe === '—' || p.pendienteDe === 'Sin asignar') ? ' cell-pending-unassigned' : ''}">${p.pendienteDe || '—'}</span></td>
+        <td class="col-dead">${formatDeadline(p.deadline)}</td>
+        <td class="col-act" onclick="event.stopPropagation()">
+          <button class="actions-btn" onclick="openActionMenu(event, ${p.id})" title="Acciones">···</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  /* ── Navigation ────────────────────────────────── */
+  function goDetail(id) { window.location.href = 'detalle.html#' + id; }
+
+  /* ── Tabs ──────────────────────────────────────── */
+  document.getElementById('tabs').addEventListener('click', function(e) {
+    const tab = e.target.closest('.tab-item');
+    if (!tab) return;
+    document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentTab = tab.dataset.tab;
+    renderTable();
+  });
+
+  /* ── Search ─────────────────────────────────────── */
+  document.getElementById('searchInput').addEventListener('input', function() {
+    currentSearch = this.value.trim();
+    renderTable();
+  });
+
+  /* ── Action dropdown ─────────────────────────────── */
+  let actionMenuOpenedUp = false;
+
+  function openActionMenu(e, id) {
+    e.stopPropagation();
+    const btn  = e.currentTarget;
+    const menu = document.getElementById('actionDropdown');
+
+    if (menu.classList.contains('open') && activePieceId === id) {
+      menu.classList.remove('open');
+      return;
+    }
+    activePieceId = id;
+    closeAll();
+
+    const piece = getPieceById(id);
+    const showChangeStatus = !!piece && piece.status !== 'publicada';
+    const showEdit = !!piece && ['solicitada','produccion','revision'].includes(piece.status);
+    document.getElementById('actionChangeStatus').style.display = showChangeStatus ? 'flex' : 'none';
+    document.getElementById('actionEdit').style.display = showEdit ? 'flex' : 'none';
+    document.getElementById('actionSep').style.display = (showChangeStatus || showEdit) ? 'block' : 'none';
+
+    const rect  = btn.getBoundingClientRect();
+    const menuW = 180;
+    menu.style.position   = 'fixed';
+    menu.style.right      = 'auto';
+    menu.style.visibility = 'hidden';
+    menu.classList.add('open');
+    const menuH = menu.offsetHeight;
+    menu.style.visibility = '';
+
+    /* Las 3 últimas filas de la tabla siempre abren hacia arriba,
+       sin depender del cálculo dinámico de espacio disponible. */
+    const allRows = [...document.querySelectorAll('#piecesBody tr')];
+    const row     = btn.closest('tr');
+    const rowIdx  = allRows.indexOf(row);
+    const isLastRows = rowIdx !== -1 && rowIdx >= allRows.length - 3;
+
+    const spaceBelow = window.innerHeight - rect.top;
+    actionMenuOpenedUp = isLastRows || spaceBelow < menuH + 8;
+    menu.style.top  = (actionMenuOpenedUp ? (rect.bottom - menuH) : rect.top) + 'px';
+    menu.style.left = (rect.right - menuW) + 'px';
+  }
+
+  document.getElementById('actionDelete').addEventListener('click', function() {
+    if (!activePieceId) return;
+    closeAll();
+    document.getElementById('deleteModalOverlay').classList.add('open');
+  });
+
+  function closeDeleteModal() {
+    document.getElementById('deleteModalOverlay').classList.remove('open');
+  }
+  document.getElementById('deleteModalClose').addEventListener('click', closeDeleteModal);
+  document.getElementById('deleteModalCancel').addEventListener('click', closeDeleteModal);
+  document.getElementById('deleteModalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeDeleteModal();
+  });
+  document.getElementById('deleteModalConfirm').addEventListener('click', function() {
+    if (!activePieceId) return;
+    const pieces = getPieces().filter(p => p.id !== activePieceId);
+    savePieces(pieces);
+    closeDeleteModal();
+    renderTable();
+    document.getElementById('sidebar').innerHTML = renderSidebar('piezas');
+  });
+
+  document.getElementById('actionEdit').addEventListener('click', function() {
+    if (!activePieceId) return;
+    openEditModal(activePieceId);
+  });
+
+  document.getElementById('actionChangeStatus').addEventListener('click', function(e) {
+    e.stopPropagation();
+    const actionMenu = document.getElementById('actionDropdown');
+    const statusMenu = document.getElementById('statusDropdown');
+    const rect = actionMenu.getBoundingClientRect();
+
+    const piece = getPieceById(activePieceId);
+    const future = piece ? STATUS_ORDER.slice(STATUS_ORDER.indexOf(piece.status) + 1) : [];
+    document.querySelectorAll('#statusDropdown [data-status]').forEach(item => {
+      item.style.display = future.includes(item.dataset.status) ? 'flex' : 'none';
+    });
+
+    statusMenu.style.position   = 'fixed';
+    statusMenu.style.right      = 'auto';
+    statusMenu.style.visibility = 'hidden';
+    statusMenu.classList.add('open');
+    const menuH = statusMenu.offsetHeight;
+    statusMenu.style.visibility = '';
+
+    /* Misma posición horizontal que el dropdown ··· y la misma dirección
+       (arriba/abajo) que este haya usado al abrirse. */
+    statusMenu.style.top  = (actionMenuOpenedUp ? (rect.bottom - menuH) : rect.top) + 'px';
+    statusMenu.style.left = rect.left + 'px';
+    actionMenu.classList.remove('open');
+  });
+
+  document.getElementById('statusDropdown').addEventListener('click', function(e) {
+    const item = e.target.closest('[data-status]');
+    if (!item || !activePieceId) return;
+    const pieces = getPieces();
+    const idx    = pieces.findIndex(p => p.id === activePieceId);
+    if (idx !== -1) { pieces[idx].status = item.dataset.status; savePieces(pieces); }
+    closeAll();
+    renderTable();
+  });
+
+  /* ── Modal nueva pieza / editar pieza ─────────────── */
+  let modalHasFile = false;
+  let modalFileData = null;
+  let modalFileDataUrl = null;
+  let editingPieceId = null;
+  let editingKeptOriginalFile = false;
+  const cal = new MiniCalendar(document.getElementById('calBtn'), () => validateModal());
+  const channelSelect = new IconSelect(
+    document.getElementById('fChannelBtn'),
+    Object.keys(CHANNEL_LABELS).map(v => ({ value: v, label: CHANNEL_LABELS[v], iconHtml: channelIcon(v) })),
+    () => validateModal()
+  );
+  const ownerSelect = new IconSelect(
+    document.getElementById('fOwnerBtn'),
+    [...TEAM_MEMBERS, 'Sin asignar'].map(v => ({ value: v, label: v })),
+    null
+  );
+  ownerSelect.setValue('Sin asignar', false);
+
+  function validateModal() {
+    const name    = document.getElementById('fName').value.trim();
+    const channel = channelSelect.getValue();
+    const deadline = cal.getValue();
+    const ok = name.length > 0 && !!channel && deadline.length > 0;
+    document.getElementById('modalSave').disabled = !ok;
+  }
+  document.getElementById('fName').addEventListener('input', validateModal);
+
+  function setModalMode(withFile) {
+    modalHasFile = withFile;
+    document.getElementById('sectionNoFile').style.display  = withFile ? 'none'  : 'block';
+    document.getElementById('sectionWithFile').style.display = withFile ? 'block' : 'none';
+    document.getElementById('modalSave').textContent = editingPieceId
+      ? 'Guardar cambios'
+      : (withFile ? 'Añadir pieza' : 'Crear solicitud');
+    validateModal();
+  }
+
+  function handleModalFile(file) {
+    if (!file) return;
+    modalFileData = file;
+    modalFileDataUrl = null;
+    editingKeptOriginalFile = false;
+    document.getElementById('fFileNameLabel').textContent = file.name;
+    document.getElementById('fFileZone').style.display    = 'none';
+    document.getElementById('fFilePreview').style.display = 'flex';
+    setModalMode(true);
+    const reader = new FileReader();
+    reader.onload = function(e) { modalFileDataUrl = e.target.result; };
+    reader.readAsDataURL(file);
+  }
+
+  function openModal() {
+    document.getElementById('modalTitle').textContent = 'Nueva pieza';
+    document.getElementById('modalOverlay').classList.add('open');
+    validateModal();
+  }
+
+  function openEditModal(id) {
+    const piece = getPieceById(id);
+    if (!piece) return;
+    closeAll();
+    editingPieceId = id;
+    editingKeptOriginalFile = !!piece.fileName;
+    modalFileData = null;
+    modalFileDataUrl = null;
+
+    document.getElementById('fName').value     = piece.name || '';
+    document.getElementById('fCampaign').value = (piece.campaign && piece.campaign !== '—') ? piece.campaign : '';
+    document.getElementById('fCliente').value  = piece.cliente || '';
+    document.getElementById('fBrief').value    = piece.brief || '';
+    document.getElementById('fCopy').value     = piece.copy || '';
+    channelSelect.setValue(piece.channel, false);
+    cal.setValue(piece.deadline || '');
+    ownerSelect.setValue((piece.pendienteDe && piece.pendienteDe !== '—') ? piece.pendienteDe : 'Sin asignar', false);
+
+    if (piece.fileName) {
+      document.getElementById('fFileNameLabel').textContent = piece.fileName;
+      document.getElementById('fFileZone').style.display    = 'none';
+      document.getElementById('fFilePreview').style.display = 'flex';
+      setModalMode(true);
+    } else {
+      document.getElementById('fFileZone').style.display    = 'flex';
+      document.getElementById('fFilePreview').style.display = 'none';
+      setModalMode(false);
+    }
+
+    document.getElementById('modalTitle').textContent = 'Editar pieza';
+    document.getElementById('modalOverlay').classList.add('open');
+    validateModal();
+  }
+
+  function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    ['fName','fCampaign','fBrief','fCliente','fCopy'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
+    });
+    cal.reset();
+    channelSelect.reset();
+    ownerSelect.setValue('Sin asignar', false);
+    document.getElementById('fFile').value         = '';
+    document.getElementById('fFileNameLabel').textContent = '';
+    document.getElementById('fFileZone').style.display    = 'flex';
+    document.getElementById('fFilePreview').style.display = 'none';
+    modalHasFile = false;
+    modalFileData = null;
+    modalFileDataUrl = null;
+    editingPieceId = null;
+    editingKeptOriginalFile = false;
+    setModalMode(false);
+  }
+
+  /* File zone — click */
+  document.getElementById('fFileZone').addEventListener('click', function() {
+    document.getElementById('fFile').click();
+  });
+  document.getElementById('fFileReplace').addEventListener('click', function() {
+    document.getElementById('fFile').click();
+  });
+  document.getElementById('fFile').addEventListener('change', function() {
+    handleModalFile(this.files[0]);
+  });
+
+  /* File zone — drag & drop */
+  document.getElementById('fFileZone').addEventListener('dragover', function(e) {
+    e.preventDefault(); this.classList.add('drag-over');
+  });
+  document.getElementById('fFileZone').addEventListener('dragleave', function() {
+    this.classList.remove('drag-over');
+  });
+  document.getElementById('fFileZone').addEventListener('drop', function(e) {
+    e.preventDefault(); this.classList.remove('drag-over');
+    handleModalFile(e.dataTransfer.files[0]);
+  });
+
+  /* Remove file */
+  document.getElementById('fFileRemove').addEventListener('click', function() {
+    modalFileData = null;
+    modalFileDataUrl = null;
+    editingKeptOriginalFile = false;
+    document.getElementById('fFile').value = '';
+    document.getElementById('fFilePreview').style.display = 'none';
+    document.getElementById('fFileZone').style.display    = 'flex';
+    setModalMode(false);
+  });
+
+  document.getElementById('newPieceBtn').addEventListener('click', openModal);
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  document.getElementById('modalCancel').addEventListener('click', closeModal);
+  document.getElementById('modalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  document.getElementById('modalSave').addEventListener('click', function() {
+    const name = document.getElementById('fName').value.trim();
+    if (!name) { document.getElementById('fName').focus(); return; }
+
+    const channel = channelSelect.getValue();
+    if (!channel) return;
+
+    const deadline = cal.getValue();
+    if (!deadline) return;
+
+    const campaign = document.getElementById('fCampaign').value.trim() || '—';
+    const cliente  = document.getElementById('fCliente').value.trim();
+    const pieces   = getPieces();
+
+    if (editingPieceId) {
+      /* ── Editar pieza existente ──────────────────── */
+      const idx = pieces.findIndex(p => p.id === editingPieceId);
+      if (idx === -1) { closeModal(); return; }
+      const orig = pieces[idx];
+
+      const owner = modalHasFile ? (orig.pendienteDe || 'Sin asignar') : (ownerSelect.getValue() || 'Sin asignar');
+      const brief = modalHasFile ? (orig.brief || '') : document.getElementById('fBrief').value.trim();
+      const copy  = modalHasFile ? document.getElementById('fCopy').value.trim() : (orig.copy || '');
+
+      let fileName, fileFormat, thumbnail, image;
+      if (modalFileData) {
+        /* archivo nuevo: sustituye al anterior */
+        fileFormat = modalFileData.name.split('.').pop().toUpperCase();
+        fileName   = modalFileData.name;
+        thumbnail  = modalFileDataUrl || orig.thumbnail || '';
+        image      = modalFileDataUrl || orig.image || '';
+      } else if (modalHasFile && editingKeptOriginalFile) {
+        /* se mantiene el archivo original sin cambios */
+        fileName = orig.fileName; fileFormat = orig.fileFormat;
+        thumbnail = orig.thumbnail; image = orig.image;
+      } else {
+        /* sin archivo (eliminado o nunca tuvo) */
+        fileName = null; fileFormat = '—'; thumbnail = ''; image = '';
+      }
+
+      pieces[idx] = {
+        ...orig,
+        name, channel, campaign,
+        pendienteDe: owner,
+        deadline,
+        cliente,
+        brief,
+        copy,
+        fileName,
+        fileFormat,
+        thumbnail,
+        image,
+      };
+      savePieces(pieces);
+      closeModal();
+      renderTable();
+      document.getElementById('sidebar').innerHTML = renderSidebar('piezas');
+      return;
+    }
+
+    /* ── Crear pieza nueva ────────────────────────── */
+    const owner    = modalHasFile ? 'Sin asignar' : (ownerSelect.getValue() || 'Sin asignar');
+    const brief    = modalHasFile ? '' : document.getElementById('fBrief').value.trim();
+    const copy     = modalHasFile ? document.getElementById('fCopy').value.trim() : '';
+    const fileFormat = modalHasFile && modalFileData
+      ? modalFileData.name.split('.').pop().toUpperCase()
+      : '—';
+    const fileName   = modalHasFile && modalFileData ? modalFileData.name : null;
+    const initialStatus = modalHasFile
+      ? 'revision'
+      : (owner !== 'Sin asignar' ? 'produccion' : 'solicitada');
+
+    const newId = Math.max(...pieces.map(p => p.id), 0) + 1;
+    const seed  = 'flowck' + newId;
+
+    pieces.push({
+      id: newId, name, channel,
+      campaign,
+      status:      initialStatus,
+      pendienteDe: owner,
+      deadline:    deadline || '',
+      ...(cliente  ? { cliente }  : {}),
+      ...(brief    ? { brief }    : {}),
+      ...(fileName ? { fileName } : {}),
+      thumbnail:   modalHasFile ? (modalFileDataUrl || '') : '',
+      image:       modalHasFile ? (modalFileDataUrl || '') : '',
+      blocked: false, blockLabel: '', blockReason: '',
+      copy,
+      fileFormat,
+      fileVersion: 'v1',
+      comments: [],
+    });
+    savePieces(pieces);
+    closeModal();
+    renderTable();
+    document.getElementById('sidebar').innerHTML = renderSidebar('piezas');
+  });
+
+  /* ── Boot ──────────────────────────────────────── */
+  renderTable();
+</script>
+</body>
+</html>

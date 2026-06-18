@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle — Flowck</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body style="overflow:hidden">
+
+<div class="detail-layout">
+
+  <!-- Topbar -->
+  <header class="detail-topbar">
+    <button class="detail-back-btn" onclick="history.back()" title="Volver">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+    <span class="detail-piece-title" id="detailTitle">—</span>
+    <div class="detail-topbar-right">
+      <!-- Status dropdown trigger -->
+      <div class="status-dropdown" id="statusDropdownWrap">
+        <button id="statusDropdownBtn" class="badge" style="cursor:pointer;border:none;font-family:inherit;gap:5px">
+          <span id="statusBadgeLabel">—</span>
+          <svg id="statusBadgeChevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="status-dropdown-menu" id="statusMenu">
+          <div class="status-dropdown-item" data-status="solicitada"><span class="badge solicitada">Solicitada</span></div>
+          <div class="status-dropdown-item" data-status="produccion"><span class="badge produccion">En producción</span></div>
+          <div class="status-dropdown-item" data-status="revision"><span class="badge revision">En revisión</span></div>
+          <div class="status-dropdown-item" data-status="aprobada"><span class="badge aprobada">Aprobada</span></div>
+          <div class="status-dropdown-item" data-status="publicada"><span class="badge publicada">Publicada</span></div>
+        </div>
+      </div>
+      <!-- Block badge (conditional) -->
+      <span id="topbarBlockBadge" style="display:none" class="detail-topbar-block-badge" onclick="scrollToBlock()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+          <path d="M12 9v4"/><path d="M12 17h.01"/>
+        </svg>
+        Bloqueada
+      </span>
+    </div>
+  </header>
+
+  <!-- 3-column body -->
+  <div class="detail-columns">
+
+    <!-- LEFT: metadata sidebar -->
+    <aside class="detail-sidebar" id="detailSidebar">
+
+      <!-- Brief (condicional: solo si p.brief) -->
+      <section id="briefSection" style="display:none">
+        <div class="detail-section-title">Brief</div>
+        <div class="detail-brief-text" id="dBrief"></div>
+        <hr class="detail-divider">
+      </section>
+
+      <!-- Datos generales -->
+      <section>
+        <div class="detail-section-title">Datos generales</div>
+        <div class="detail-field">
+          <div class="detail-field-label">Pendiente de</div>
+          <div class="detail-field-value" id="dPendiente">—</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-field-label">Diseñador</div>
+          <div class="detail-field-value" id="dDiseñador">—</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-field-label">Deadline</div>
+          <div class="detail-field-value" id="dDeadline">—</div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-field-label">Canal</div>
+          <div class="detail-field-value" id="dCanal"></div>
+        </div>
+        <div class="detail-field">
+          <div class="detail-field-label">Campaña</div>
+          <div class="detail-field-value" id="dCampaña">—</div>
+        </div>
+        <hr class="detail-divider">
+      </section>
+
+      <!-- Bloqueo (hidden if no block) -->
+      <section id="blockSection" style="display:none">
+        <div class="detail-section-title">Bloqueo</div>
+        <div class="detail-block-box" id="blockBox">
+          <div class="block-label">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+              <path d="M12 9v4"/><path d="M12 17h.01"/>
+            </svg>
+            <span id="dBlockLabel">Bloqueada</span>
+          </div>
+          <div class="block-reason" id="dBlockReason">—</div>
+          <button class="block-resolve-btn" id="resolveFromDetail">Marcar como resuelto</button>
+        </div>
+        <hr class="detail-divider">
+      </section>
+
+      <!-- Archivo -->
+      <section>
+        <div class="detail-section-title">Archivo</div>
+        <div class="detail-file-info">
+          <div class="detail-file-row">
+            <span class="detail-file-key">Formato</span>
+            <span class="detail-file-val" id="dFormat">—</span>
+          </div>
+          <div class="detail-file-row">
+            <span class="detail-file-key">Versión</span>
+            <span class="detail-file-val" id="dVersion">—</span>
+          </div>
+        </div>
+        <div class="detail-filename-row" id="filenameRow" style="display:none">
+          <span class="detail-filename" id="dFileName">—</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;color:var(--text-on-dark-muted)">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="7 10 12 15 17 10"/>
+            <line x1="12" y1="15" x2="12" y2="3"/>
+          </svg>
+        </div>
+        <div id="uploadNewVersionWrap" style="display:none;margin-top:6px">
+          <button type="button" id="uploadNewVersionBtn" class="upload-new-version-sidebar">Subir nueva versión</button>
+          <input type="file" id="newVersionInput" accept="image/*,video/*,.pdf" style="display:none">
+        </div>
+      </section>
+
+    </aside>
+
+    <!-- CENTER: creative + copy -->
+    <main class="detail-center" id="detailCenter">
+      <div id="creativeWrap" style="flex:1;min-height:0;display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:32px;padding:32px">
+        <img id="creativeImg" class="detail-creative-img" src="" alt=""
+             onerror="this.style.display='none';document.getElementById('uploadZone').style.display='flex'">
+        <div id="uploadZone" class="detail-upload-zone" style="display:none;flex:1;width:100%"
+             onclick="document.getElementById('fileInput').click()">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:#aaa">
+            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          <span>Arrastra o <strong style="color:var(--text-primary)">haz clic</strong> para subir</span>
+          <span style="font-size:11.5px;color:#aaa">PNG, JPG, MP4, PDF</span>
+          <input type="file" id="fileInput" accept="image/*,video/*,.pdf" style="display:none"
+                 onchange="handleFileUpload(event)">
+        </div>
+
+        <div class="detail-copy-section" id="copySection">
+          <div class="detail-copy-label">Copy</div>
+          <div style="position:relative">
+            <textarea class="detail-copy-text" id="dCopy"></textarea>
+            <span id="copyAutosaved" class="copy-autosaved">Guardado ✓</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- RIGHT: comments -->
+    <aside class="detail-comments">
+      <div class="detail-comments-header">
+        Comentarios
+        <span class="comments-count" id="commentsCount">0</span>
+      </div>
+      <div class="comments-list" id="commentsList"></div>
+      <div class="comments-input-area">
+        <textarea id="commentInput" placeholder="Escribe un comentario…" rows="1"
+                  oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+        <button id="commentSend">Enviar</button>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<!-- Resolve confirmation modal -->
+<div class="modal-overlay" id="resolveOverlay">
+  <div class="modal" style="width:400px">
+    <div class="modal-header">
+      <span class="modal-title">Resolver bloqueo</span>
+      <button class="modal-close" id="resolveClose">✕</button>
+    </div>
+    <p style="font-size:13.5px;color:#444;line-height:1.55;margin-bottom:18px">
+      ¿Confirmas que el bloqueo de esta pieza ha sido resuelto?
+    </p>
+    <div class="form-group">
+      <label class="form-label">Nota (opcional)</label>
+      <textarea class="form-textarea" id="resolveNote" placeholder="Ej. Cliente aprobó los copies por email." style="min-height:65px"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="resolveCancel">Cancelar</button>
+      <button class="btn btn-primary" id="resolveConfirm" style="background:#16A34A;border-color:#16A34A">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Confirmar
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+  /* ── Load piece ─────────────────────────────────── */
+  const pieceId = parseInt(window.location.hash.slice(1));
+  let piece     = getPieceById(pieceId);
+
+  if (!piece) {
+    document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:Inter,sans-serif;color:#666"><div style="text-align:center"><p style="font-size:16px;font-weight:600">Pieza no encontrada</p><a href="index.html" style="color:#6366F1;font-size:14px;text-decoration:none;margin-top:8px;display:inline-block">← Volver a Piezas</a></div></div>';
+    throw new Error('Piece not found');
+  }
+
+  /* ── Populate ────────────────────────────────────── */
+  function populate() {
+    piece = getPieceById(pieceId);
+
+    document.title = `${piece.name} — Flowck`;
+    document.getElementById('detailTitle').textContent = piece.name;
+
+    /* topbar status badge */
+    const btn = document.getElementById('statusDropdownBtn');
+    btn.className = `badge ${piece.status}`;
+    document.getElementById('statusBadgeLabel').textContent = STATUS_LABELS[piece.status];
+
+    /* publicada: badge informativo, no desplegable */
+    const isPublished = piece.status === 'publicada';
+    btn.disabled = isPublished;
+    btn.style.cssText = `border:none;font-family:inherit;gap:5px;display:inline-flex;align-items:center;cursor:${isPublished ? 'default' : 'pointer'}`;
+    document.getElementById('statusBadgeChevron').style.display = isPublished ? 'none' : '';
+
+    /* muestra todos los estados futuros del ciclo, nunca el actual ni los anteriores */
+    const future = STATUS_ORDER.slice(STATUS_ORDER.indexOf(piece.status) + 1);
+    document.querySelectorAll('#statusMenu [data-status]').forEach(item => {
+      item.style.display = future.includes(item.dataset.status) ? 'flex' : 'none';
+    });
+
+    /* topbar block badge */
+    document.getElementById('topbarBlockBadge').style.display = piece.blocked ? 'inline-flex' : 'none';
+
+    /* sidebar fields */
+    document.getElementById('dPendiente').textContent  = piece.pendienteDe || '—';
+    document.getElementById('dDiseñador').textContent  = piece.diseñador   || '—';
+    const canalEl = document.getElementById('dCanal');
+    canalEl.innerHTML = channelIcon(piece.channel);
+    document.getElementById('dCampaña').textContent   = piece.campaign  || '—';
+    document.getElementById('dDeadline').textContent  = formatDeadlinePlain(piece.deadline) || '—';
+
+    /* brief (condicional) */
+    const briefSec = document.getElementById('briefSection');
+    if (piece.brief && piece.brief.trim()) {
+      briefSec.style.display = 'block';
+      document.getElementById('dBrief').textContent = piece.brief;
+    } else {
+      briefSec.style.display = 'none';
+    }
+
+    /* block section */
+    const blockSec = document.getElementById('blockSection');
+    if (piece.blocked) {
+      blockSec.style.display = 'block';
+      document.getElementById('dBlockLabel').textContent = piece.blockLabel || 'Bloqueada';
+      document.getElementById('dBlockReason').textContent = piece.blockReason || '';
+    } else {
+      blockSec.style.display = 'none';
+    }
+
+    /* archivo */
+    document.getElementById('dFormat').textContent = piece.fileFormat || '—';
+    document.getElementById('dVersion').textContent = piece.fileVersion || '—';
+    const fnRow = document.getElementById('filenameRow');
+    if (piece.fileName) {
+      document.getElementById('dFileName').textContent = piece.fileName;
+      fnRow.style.display = 'flex';
+    } else {
+      fnRow.style.display = 'none';
+    }
+    fnRow._piece = piece;
+
+    /* creative */
+    const img = document.getElementById('creativeImg');
+    if (piece.image) {
+      img.src = piece.image;
+      img.style.display = 'block';
+      document.getElementById('uploadZone').style.display = 'none';
+    } else {
+      img.style.display = 'none';
+      document.getElementById('uploadZone').style.display = 'flex';
+    }
+
+    /* copy — editable, no sobreescribir si el usuario está escribiendo */
+    const copyEl = document.getElementById('dCopy');
+    if (document.activeElement !== copyEl) copyEl.value = piece.copy || '';
+
+    /* upload new version button */
+    const canUpload = !['aprobada','publicada'].includes(piece.status);
+    document.getElementById('uploadNewVersionWrap').style.display = canUpload ? 'block' : 'none';
+
+    /* comments */
+    renderComments();
+  }
+
+  function renderComments() {
+    const list = document.getElementById('commentsList');
+    document.getElementById('commentsCount').textContent = piece.comments.length;
+
+    if (piece.comments.length === 0) {
+      list.innerHTML = '<div style="padding:24px 16px;text-align:center;color:#999;font-size:13px">Sin comentarios aún.<br>Sé el primero en comentar.</div>';
+      return;
+    }
+
+    list.innerHTML = piece.comments.map(c => {
+      const parts = c.author.trim().split(' ');
+      const initials = parts.length >= 2
+        ? parts[0][0] + parts[parts.length - 1][0]
+        : parts[0].slice(0, 2);
+      return `
+      <div class="comment-item">
+        <div class="comment-header">
+          <div class="comment-avatar" style="background:${getAuthorColor(c.author)}">${initials.toUpperCase()}</div>
+          <span class="comment-author">${c.author}</span>
+          <span class="comment-role-badge role-${c.role}">${roleLabel(c.role)}</span>
+          <span class="comment-time">${c.time}</span>
+        </div>
+        <div class="comment-text">${c.text}</div>
+      </div>`;
+    }).join('');
+
+    list.scrollTop = list.scrollHeight;
+  }
+
+  function roleLabel(role) {
+    return { manager: 'Manager', content: 'Content', cliente: 'Cliente' }[role] || role;
+  }
+
+  /* ── Status dropdown ─────────────────────────────── */
+  document.getElementById('statusDropdownBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (this.disabled) return;
+    const menu = document.getElementById('statusMenu');
+    menu.classList.toggle('open');
+  });
+
+  document.getElementById('statusMenu').addEventListener('click', function(e) {
+    const item = e.target.closest('[data-status]');
+    if (!item) return;
+    const pieces = getPieces();
+    const idx    = pieces.findIndex(p => p.id === pieceId);
+    if (idx !== -1) { pieces[idx].status = item.dataset.status; savePieces(pieces); }
+    document.getElementById('statusMenu').classList.remove('open');
+    populate();
+  });
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#statusDropdownWrap')) {
+      document.getElementById('statusMenu').classList.remove('open');
+    }
+  });
+
+  /* ── Scroll to block ─────────────────────────────── */
+  function scrollToBlock() {
+    const blockSec = document.getElementById('blockSection');
+    if (blockSec) blockSec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  /* ── Resolve block ───────────────────────────────── */
+  document.getElementById('resolveFromDetail').addEventListener('click', function() {
+    document.getElementById('resolveNote').value = '';
+    document.getElementById('resolveOverlay').classList.add('open');
+  });
+
+  document.getElementById('resolveClose').addEventListener('click', closeResolve);
+  document.getElementById('resolveCancel').addEventListener('click', closeResolve);
+  document.getElementById('resolveOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeResolve();
+  });
+
+  function closeResolve() {
+    document.getElementById('resolveOverlay').classList.remove('open');
+  }
+
+  document.getElementById('resolveConfirm').addEventListener('click', function() {
+    const pieces = getPieces();
+    const idx    = pieces.findIndex(p => p.id === pieceId);
+    if (idx !== -1) { pieces[idx].blocked = false; pieces[idx].blockReason = ''; savePieces(pieces); }
+    closeResolve();
+    populate();
+  });
+
+  /* ── Autosave Copy ──────────────────────────────── */
+  let copyAutosaveTimer = null;
+  document.getElementById('dCopy').addEventListener('input', function() {
+    clearTimeout(copyAutosaveTimer);
+    copyAutosaveTimer = setTimeout(function() {
+      const val = document.getElementById('dCopy').value;
+      const pieces = getPieces();
+      const idx = pieces.findIndex(p => p.id === pieceId);
+      if (idx !== -1) { pieces[idx].copy = val; savePieces(pieces); piece = pieces[idx]; }
+      const indicator = document.getElementById('copyAutosaved');
+      indicator.classList.add('visible');
+      setTimeout(() => indicator.classList.remove('visible'), 1500);
+    }, 800);
+  });
+
+  /* ── Upload new version ─────────────────────────── */
+  document.getElementById('uploadNewVersionBtn').addEventListener('click', function() {
+    document.getElementById('newVersionInput').click();
+  });
+
+  document.getElementById('newVersionInput').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const ext = file.name.split('.').pop().toUpperCase();
+    const newVersion = incrementVersion(piece.fileVersion);
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const dataUrl = e.target.result;
+      const pieces = getPieces();
+      const idx = pieces.findIndex(p => p.id === pieceId);
+      if (idx !== -1) {
+        pieces[idx].image      = dataUrl;
+        pieces[idx].thumbnail  = dataUrl;
+        pieces[idx].fileName   = file.name;
+        pieces[idx].fileFormat = ext;
+        pieces[idx].fileVersion = newVersion;
+        savePieces(pieces);
+        piece = pieces[idx];
+      }
+      event.target.value = '';
+      populate();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function incrementVersion(v) {
+    if (!v) return 'v2';
+    const num = parseInt(v.replace(/[^0-9]/g, '')) || 1;
+    return 'v' + (num + 1);
+  }
+
+  /* ── File upload ─────────────────────────────────── */
+  function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    /* Auto-transición de estado al subir archivo */
+    if (['solicitada', 'produccion'].includes(piece.status)) {
+      const pieces = getPieces();
+      const idx = pieces.findIndex(p => p.id === pieceId);
+      if (idx !== -1) {
+        pieces[idx].status = 'revision';
+        savePieces(pieces);
+        piece = pieces[idx];
+      }
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const dataUrl = e.target.result;
+      const pieces = getPieces();
+      const idx = pieces.findIndex(p => p.id === pieceId);
+      if (idx !== -1) {
+        pieces[idx].image     = dataUrl;
+        pieces[idx].thumbnail = dataUrl;
+        pieces[idx].fileName  = file.name;
+        pieces[idx].fileFormat = file.name.split('.').pop().toUpperCase();
+        if (!pieces[idx].fileVersion) pieces[idx].fileVersion = 'v1';
+        savePieces(pieces);
+        piece = pieces[idx];
+      }
+      const img = document.getElementById('creativeImg');
+      img.src = dataUrl;
+      img.style.display = 'block';
+      document.getElementById('uploadZone').style.display = 'none';
+      populate();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  /* ── View file (demo) ────────────────────────────── */
+  document.getElementById('filenameRow').addEventListener('click', function() {
+    if (piece && piece.image) window.open(piece.image, '_blank');
+  });
+
+  /* ── Add comment ─────────────────────────────────── */
+  document.getElementById('commentSend').addEventListener('click', sendComment);
+  document.getElementById('commentInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendComment(); }
+  });
+
+  function sendComment() {
+    const input = document.getElementById('commentInput');
+    const text  = input.value.trim();
+    if (!text) return;
+
+    const pieces = getPieces();
+    const idx    = pieces.findIndex(p => p.id === pieceId);
+    if (idx !== -1) {
+      const newComment = {
+        id:     Date.now(),
+        author: 'María G.',
+        role:   'manager',
+        time:   'Ahora',
+        text,
+        color:  getAuthorColor('María G.'),
+      };
+      pieces[idx].comments.push(newComment);
+      savePieces(pieces);
+      piece = pieces[idx];
+    }
+    input.value = '';
+    input.style.height = 'auto';
+    renderComments();
+  }
+
+  /* ── Boot ────────────────────────────────────────── */
+  populate();
+</script>
+</body>
+</html>

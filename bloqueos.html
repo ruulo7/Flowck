@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bloqueos — Flowck</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="sidebar"></div>
+
+<div class="main">
+  <div id="topbar"></div>
+
+  <div class="content-header">
+    <div class="page-header">
+      <div style="display:flex;align-items:center;gap:12px">
+        <h1 class="page-title">Bloqueos</h1>
+        <span class="blocks-header-badge" id="blocksCountBadge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+            <path d="M12 9v4"/>
+            <path d="M12 17h.01"/>
+          </svg>
+          <span id="blocksCountText">0 activos</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+    <div id="blocksGrid" class="blocks-grid"></div>
+
+    <div id="emptyBlocks" class="empty-state" style="display:none">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
+        <path d="M22 11.08V12a10 10 0 11-5.93-9.14"/>
+        <polyline points="22 4 12 14.01 9 11.01"/>
+      </svg>
+      <p style="font-size:15px;font-weight:600;color:#666;margin-top:12px">Sin bloqueos activos</p>
+      <p style="color:#999;margin-top:4px">Todas las piezas están avanzando sin impedimentos.</p>
+    </div>
+  </div><!-- .content -->
+</div><!-- .main -->
+
+<!-- Resolve block modal -->
+<div class="modal-overlay" id="resolveOverlay">
+  <div class="modal" style="width:420px">
+    <div class="modal-header">
+      <span class="modal-title">Marcar como resuelto</span>
+      <button class="modal-close" id="resolveClose">✕</button>
+    </div>
+    <p style="font-size:13.5px;color:#444;line-height:1.55;margin-bottom:20px">
+      ¿Confirmas que el bloqueo de <strong id="resolvePieceName"></strong> ha sido resuelto?
+    </p>
+    <div class="form-group">
+      <label class="form-label">Nota de resolución (opcional)</label>
+      <textarea class="form-textarea" id="resolveNote" placeholder="Ej. Cliente aprobó los copies por email." style="min-height:70px"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="resolveCancel">Cancelar</button>
+      <button class="btn btn-primary" id="resolveConfirm" style="background:#16A34A;border-color:#16A34A">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Confirmar resolución
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+  document.getElementById('sidebar').innerHTML = renderSidebar('bloqueos');
+  document.getElementById('topbar').innerHTML  = renderTopbar();
+
+  /* ── Check URL for highlight param ─────────────── */
+  const hash        = window.location.hash; // e.g. #h5
+  const highlightId = hash.startsWith('#h') ? parseInt(hash.slice(2)) : null;
+
+  let pendingResolveId = null;
+
+  /* ── Render grid ────────────────────────────────── */
+  function renderBlocks() {
+    const blocked = getBlockedPieces().sort((a, b) => {
+      if (!a.deadline) return 1;
+      if (!b.deadline) return -1;
+      return new Date(a.deadline) - new Date(b.deadline);
+    });
+
+    const grid  = document.getElementById('blocksGrid');
+    const empty = document.getElementById('emptyBlocks');
+    const badge = document.getElementById('blocksCountText');
+
+    badge.textContent = `${blocked.length} activo${blocked.length !== 1 ? 's' : ''}`;
+
+    if (blocked.length === 0) {
+      grid.style.display  = 'none';
+      empty.style.display = 'block';
+      return;
+    }
+    grid.style.display  = 'grid';
+    empty.style.display = 'none';
+
+    grid.innerHTML = blocked.map(p => {
+      const isHighlight = highlightId === p.id;
+      const deadlineStr = formatDeadlinePlain(p.deadline);
+      const daysBlocked = p.blockedSince
+        ? Math.max(1, Math.round((new Date() - new Date(p.blockedSince + 'T00:00:00')) / 86400000))
+        : '—';
+      const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+      const dl = p.deadline ? new Date(p.deadline + 'T00:00:00') : null;
+      const deadlineBadgeStr = dl ? `${dl.getDate()} ${months[dl.getMonth()]}` : '—';
+      return `
+        <div class="block-card${isHighlight ? ' highlight' : ''}" id="card-${p.id}"
+             onclick="window.location.href='detalle.html#${p.id}'">
+
+          <img class="block-card-img"
+               src="${p.image || p.thumbnail}"
+               alt="${p.name}"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="block-card-img-placeholder" style="display:none">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+          </div>
+
+          <div class="block-card-body">
+            <div class="block-card-header">
+              <div class="block-card-title">${p.name}</div>
+              <span class="block-deadline-badge">${deadlineBadgeStr}</span>
+            </div>
+
+            <div class="block-card-meta">
+              ${channelIcon(p.channel)}
+              <span class="block-card-campaign">${p.campaign}</span>
+            </div>
+
+            <div class="block-reason-box">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                <path d="M12 9v4"/><path d="M12 17h.01"/>
+              </svg>
+              <span>${p.blockReason}</span>
+            </div>
+
+            <div class="block-card-footer">
+              <hr class="block-divider">
+              <div class="block-footer-info">
+                <div class="block-info-item">
+                  <span class="block-info-label">Pendiente de</span>
+                  <span class="block-info-value">${p.pendienteDe}</span>
+                </div>
+                <div class="block-info-item">
+                  <span class="block-info-label">Días bloqueada</span>
+                  <span class="block-info-value">${daysBlocked} días</span>
+                </div>
+                <div>${statusBadge(p.status)}</div>
+              </div>
+              <hr class="block-divider">
+              <button class="block-resolve-btn"
+                      onclick="event.stopPropagation();openResolve(${p.id})">
+                Marcar como resuelto
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    /* scroll to highlighted card */
+    if (highlightId) {
+      setTimeout(() => {
+        const card = document.getElementById(`card-${highlightId}`);
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 120);
+    }
+  }
+
+  function isUrgent(dateStr) {
+    if (!dateStr) return false;
+    const d    = new Date(dateStr + 'T00:00:00');
+    const now  = new Date(); now.setHours(0,0,0,0);
+    return Math.round((d - now) / 86400000) <= 3;
+  }
+
+  /* ── Resolve modal ──────────────────────────────── */
+  function openResolve(id) {
+    pendingResolveId = id;
+    const p = getPieceById(id);
+    document.getElementById('resolvePieceName').textContent = p ? p.name : '';
+    document.getElementById('resolveNote').value = '';
+    document.getElementById('resolveOverlay').classList.add('open');
+  }
+
+  function closeResolve() {
+    document.getElementById('resolveOverlay').classList.remove('open');
+    pendingResolveId = null;
+  }
+
+  document.getElementById('resolveClose').addEventListener('click', closeResolve);
+  document.getElementById('resolveCancel').addEventListener('click', closeResolve);
+  document.getElementById('resolveOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeResolve();
+  });
+
+  document.getElementById('resolveConfirm').addEventListener('click', function() {
+    if (!pendingResolveId) return;
+    const pieces = getPieces();
+    const idx    = pieces.findIndex(p => p.id === pendingResolveId);
+    if (idx !== -1) {
+      pieces[idx].blocked     = false;
+      pieces[idx].blockReason = '';
+    }
+    savePieces(pieces);
+    closeResolve();
+    renderBlocks();
+    document.getElementById('sidebar').innerHTML = renderSidebar('bloqueos');
+  });
+
+  /* ── Boot ─────────────────────────────────────── */
+  renderBlocks();
+</script>
+</body>
+</html>
