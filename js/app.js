@@ -153,8 +153,13 @@ function renderSidebar(active) {
 }
 
 /* ── Page topbar HTML ───────────────────────────── */
+const PROFILE_FULL_NAME = 'María García';
+
 function renderTopbar() {
   const unread = getNotifications().filter(n => !n.read).length;
+  const me = USERS[0];
+  const initials = me.name.trim().split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+  const roleLabel = ROLE_LABELS[me.role] || me.role;
   return `
   <header class="page-topbar">
     <button class="topbar-bell-btn" id="notifBellBtn" title="Notificaciones">
@@ -164,7 +169,27 @@ function renderTopbar() {
       </svg>
       <span class="topbar-notif-badge" id="notifBadge" style="display:${unread > 0 ? 'flex' : 'none'}">${unread}</span>
     </button>
-    <div class="topbar-avatar" title="Perfil">MG</div>
+    <div class="profile-avatar-wrap" id="profileAvatarWrap">
+      <button class="topbar-avatar" id="profileAvatarBtn" style="background:${me.color}" title="Perfil">${initials}</button>
+      <div class="profile-dropdown" id="profileDropdown">
+        <div class="profile-dropdown-header">
+          <div class="profile-dropdown-avatar" style="background:${me.color}">${initials}</div>
+          <div class="profile-dropdown-info">
+            <span class="profile-dropdown-name">${PROFILE_FULL_NAME}</span>
+            <span class="member-role">${roleLabel}</span>
+          </div>
+        </div>
+        <div class="dropdown-sep"></div>
+        <div class="dropdown-item danger" id="profileSignOutBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Cerrar sesión
+        </div>
+      </div>
+    </div>
   </header>
   <div class="notif-panel" id="notifPanel">
     <div class="notif-panel-header">
@@ -314,7 +339,36 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   updateNotifBadge();
+
+  /* Profile avatar dropdown */
+  const avatarBtn = document.getElementById('profileAvatarBtn');
+  if (avatarBtn) avatarBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    closeNotifPanel();
+    document.getElementById('profileDropdown')?.classList.toggle('open');
+  });
+
+  const signOutBtn = document.getElementById('profileSignOutBtn');
+  if (signOutBtn) signOutBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.getElementById('profileDropdown')?.classList.remove('open');
+    showToast('Sesión cerrada');
+  });
 });
+
+function showToast(text) {
+  let toast = document.getElementById('appToast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'appToast';
+    toast.className = 'app-toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = text;
+  toast.classList.add('visible');
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => toast.classList.remove('visible'), 2400);
+}
 
 document.addEventListener('click', function(e) {
   if (!e.target.closest('.dropdown') &&
@@ -328,6 +382,10 @@ document.addEventListener('click', function(e) {
   /* Close notif panel on outside click */
   if (!e.target.closest('#notifPanel') && !e.target.closest('#notifBellBtn')) {
     closeNotifPanel();
+  }
+  /* Close profile dropdown on outside click */
+  if (!e.target.closest('#profileAvatarWrap')) {
+    document.getElementById('profileDropdown')?.classList.remove('open');
   }
 });
 

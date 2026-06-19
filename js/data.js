@@ -48,6 +48,9 @@ const ROLE_LABELS = {
 
 const AVATAR_PALETTE = ['#0891B2','#B45309','#6D28D9','#0F766E','#BE123C','#1D4ED8','#854D0E','#065F46'];
 
+/* Normaliza valores legacy de pendienteDe almacenados en localStorage */
+const PENDIENTE_NORMALIZE = { 'Julia': 'Julia B.', 'Carlos': 'Carlos R.', 'María': 'María G.' };
+
 const WORKSPACE_DEFAULT = { name: 'Pulse Agency', color: '#F59E0B' };
 
 function getWorkspace() {
@@ -92,7 +95,7 @@ const PIECES = [
     campaign: 'Verano 2025',
     cliente: 'Nike',
     status: 'solicitada',
-    pendienteDe: 'Julia',
+    pendienteDe: 'Julia B.',
     diseñador: 'Carlos R.',
     deadline: '2026-06-12',
     brief: 'Banner para el lanzamiento de la colección de verano Q1. Debe transmitir energía, color y exclusividad. Formato cuadrado para feed de Instagram. CTA claro hacia la landing de producto. Tono: aspiracional pero cercano.',
@@ -118,7 +121,7 @@ const PIECES = [
     channel: 'facebook',
     campaign: 'Onboarding',
     status: 'produccion',
-    pendienteDe: 'Carlos',
+    pendienteDe: 'Carlos R.',
     diseñador: 'María G.',
     deadline: '2026-06-15',
     brief: 'Pieza de bienvenida para nuevos usuarios que acaban de activar su cuenta. Debe ser cálida, clara y funcional. Incluir el logo de la app en primer plano y un mensaje de activación. Formato horizontal para Facebook feed.',
@@ -140,7 +143,7 @@ const PIECES = [
     channel: 'instagram',
     campaign: 'Lanzamiento',
     status: 'revision',
-    pendienteDe: 'Julia',
+    pendienteDe: 'Julia B.',
     deadline: '2026-06-19',
     thumbnail: 'https://picsum.photos/seed/flowck3/64/64',
     image: 'https://picsum.photos/seed/flowck3/900/560',
@@ -201,7 +204,7 @@ const PIECES = [
     channel: 'facebook',
     campaign: 'Comunicación',
     status: 'aprobada',
-    pendienteDe: 'Julia',
+    pendienteDe: 'Julia B.',
     deadline: '2026-06-23',
     thumbnail: 'https://picsum.photos/seed/flowck6/64/64',
     image: 'https://picsum.photos/seed/flowck6/900/560',
@@ -241,7 +244,7 @@ const PIECES = [
     channel: 'linkedin',
     campaign: 'Verano 2025',
     status: 'solicitada',
-    pendienteDe: 'Julia',
+    pendienteDe: 'Julia B.',
     deadline: '2026-06-27',
     thumbnail: 'https://picsum.photos/seed/flowck8/64/64',
     image: 'https://picsum.photos/seed/flowck8/900/560',
@@ -280,7 +283,7 @@ const PIECES = [
     channel: 'facebook',
     campaign: 'Lanzamiento',
     status: 'produccion',
-    pendienteDe: 'Julia',
+    pendienteDe: 'Julia B.',
     deadline: '2026-06-29',
     thumbnail: 'https://picsum.photos/seed/flowck10/64/64',
     image: 'https://picsum.photos/seed/flowck10/900/560',
@@ -298,7 +301,7 @@ const PIECES = [
     campaign: 'Ohana',
     cliente: 'Telecom Plus',
     status: 'aprobada',
-    pendienteDe: 'Carlos',
+    pendienteDe: 'Carlos R.',
     deadline: '2026-06-30',
     thumbnail: 'https://picsum.photos/seed/flowck11/64/64',
     image: 'https://picsum.photos/seed/flowck11/900/560',
@@ -336,7 +339,7 @@ const PIECES = [
     channel: 'linkedin',
     campaign: 'Onboarding',
     status: 'revision',
-    pendienteDe: 'María',
+    pendienteDe: 'María G.',
     deadline: '2026-07-05',
     thumbnail: 'https://picsum.photos/seed/flowck13/64/64',
     image: 'https://picsum.photos/seed/flowck13/900/560',
@@ -375,7 +378,7 @@ const PIECES = [
     channel: 'facebook',
     campaign: 'Ohana',
     status: 'produccion',
-    pendienteDe: 'Julia',
+    pendienteDe: 'Julia B.',
     deadline: '2026-07-08',
     thumbnail: 'https://picsum.photos/seed/flowck15/64/64',
     image: 'https://picsum.photos/seed/flowck15/900/560',
@@ -392,9 +395,7 @@ const PIECES = [
 
 function getPieces() {
   const stored = localStorage.getItem('flowck_pieces');
-  if (!stored) return PIECES;
-  const pieces = JSON.parse(stored);
-  return pieces.map(p => {
+  const raw = stored ? JSON.parse(stored).map(p => {
     const defaults = PIECES.find(d => d.id === p.id);
     if (!defaults) return p;
     const merged = { ...p };
@@ -402,7 +403,11 @@ function getPieces() {
       if (merged[key] === undefined) merged[key] = defaults[key];
     }
     return merged;
-  });
+  }) : PIECES;
+  return raw.map(p => ({
+    ...p,
+    pendienteDe: PENDIENTE_NORMALIZE[p.pendienteDe] || p.pendienteDe,
+  }));
 }
 
 function savePieces(pieces) {

@@ -268,7 +268,7 @@
   function getFilteredPieces() {
     let pieces = getPieces();
     if (currentTab === 'activas')   pieces = pieces.filter(p => p.status !== 'publicada');
-    if (currentTab === 'mitrabajo') pieces = pieces.filter(p => p.pendienteDe === 'Julia');
+    if (currentTab === 'mitrabajo') pieces = pieces.filter(p => p.pendienteDe === 'Julia B.');
     if (currentSearch) {
       const q = currentSearch.toLowerCase();
       pieces = pieces.filter(p => p.name.toLowerCase().includes(q) || p.campaign.toLowerCase().includes(q));

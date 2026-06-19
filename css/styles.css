@@ -154,16 +154,77 @@ body {
   border: 1.5px solid var(--sidebar-bg);
 }
 
+.profile-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
 .topbar-avatar {
-  width: 30px; height: 30px;
+  width: 26px; height: 26px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #6366F1, #8B5CF6);
+  border: none; padding: 0;
   color: #fff;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
+}
+
+/* ── PROFILE DROPDOWN ───────────────────────────── */
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--surface);
+  border: 0.5px solid #E5E5E3;
+  border-radius: var(--r);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+  z-index: 400;
+  width: max-content;
+  display: none;
+  overflow: hidden;
+}
+.profile-dropdown.open { display: block; }
+
+.profile-dropdown-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 16px;
+}
+.profile-dropdown-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 15px; font-weight: 700;
+  flex-shrink: 0; letter-spacing: -0.4px;
+}
+.profile-dropdown-info {
+  display: flex; flex-direction: column; gap: 5px; align-items: center;
+}
+.profile-dropdown-name {
+  font-size: 13.5px; font-weight: 600; color: var(--text-primary);
+}
+
+/* ── TOAST ──────────────────────────────────────── */
+.app-toast {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--text-primary);
+  color: #fff;
+  font-size: 13px; font-weight: 500;
+  padding: 10px 16px;
+  border-radius: var(--r);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.18s, transform 0.18s;
+  pointer-events: none;
+  z-index: 9999;
+}
+.app-toast.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ── CONTENT ─────────────────────────────────────── */
@@ -1440,7 +1501,7 @@ button.badge {
   color: var(--text-secondary);
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: var(--r-sm);
+  border-radius: var(--r-full);
   padding: 2px 8px;
 }
 .member-trash-btn {

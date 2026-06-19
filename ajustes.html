@@ -69,7 +69,7 @@
     </div>
     <div class="form-group">
       <label class="form-label">Nombre completo <span class="required-star">*</span></label>
-      <input class="form-input" id="newMemberName" type="text" placeholder="Ej. Pedro S.">
+      <input class="form-input" id="newMemberName" type="text" placeholder="Ej. Pedro Sánchez">
     </div>
     <div class="form-group">
       <label class="form-label">Rol <span class="required-star">*</span></label>
@@ -153,14 +153,24 @@
   });
 
   /* ── Team list ───────────────────────────── */
+  const FULL_NAMES = {
+    'María G.':  'María García',
+    'Carlos R.': 'Carlos Rodríguez',
+    'Julia B.':  'Julia Benítez',
+    'Ana R.':    'Ana Ruiz',
+    'David M.':  'David Morales',
+  };
+
   let pendingDeleteName = null;
 
   function renderMemberList() {
     const users = getUsers().filter(u => u.role !== 'cliente');
-    const html = users.map(u => `<div class="member-row">
+    const html = users.map(u => {
+      const displayName = FULL_NAMES[u.name] || u.name;
+      return `<div class="member-row">
       <div class="member-avatar" style="background:${u.color}">${getMemberInitials(u.name)}</div>
       <div class="member-info">
-        <span class="member-name">${u.name}</span>
+        <span class="member-name">${displayName}</span>
         <span class="member-role">${ROLE_LABELS[u.role] || u.role}</span>
       </div>
       <button class="member-trash-btn" data-name="${u.name.replace(/"/g, '&quot;')}" title="Eliminar miembro">
@@ -171,7 +181,8 @@
           <path d="M9 6V4h6v2"/>
         </svg>
       </button>
-    </div>`).join('');
+    </div>`;
+    }).join('');
     document.getElementById('memberList').innerHTML = html;
     document.querySelectorAll('.member-trash-btn').forEach(btn => {
       btn.addEventListener('click', function() { openDeleteMember(this.dataset.name); });
