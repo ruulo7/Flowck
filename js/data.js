@@ -27,17 +27,60 @@ const CHANNEL_LABELS = {
   otro:      'Otro',
 };
 
-const TEAM_MEMBERS = ['Julia B.', 'Carlos R.', 'María G.'];
+const TEAM_MEMBERS = ['Julia B.', 'Carlos R.', 'María G.', 'Ana R.', 'David M.'];
 
 const USERS = [
   { name: 'María G.',  color: '#3A7BD5', role: 'manager' },
   { name: 'Carlos R.', color: '#059669', role: 'content' },
   { name: 'Julia B.',  color: '#7C3AED', role: 'content' },
-  { name: 'Cliente',   color: '#6B6B6B', role: 'cliente' },
+  { name: 'Ana R.',    color: '#BE185D', role: 'diseño'   },
+  { name: 'David M.',  color: '#EA580C', role: 'social'   },
+  { name: 'Cliente',   color: '#6B6B6B', role: 'cliente'  },
 ];
 
+const ROLE_LABELS = {
+  manager: 'Manager',
+  content: 'Content',
+  diseño:  'Diseño',
+  social:  'Social Media',
+  cliente: 'Cliente',
+};
+
+const AVATAR_PALETTE = ['#0891B2','#B45309','#6D28D9','#0F766E','#BE123C','#1D4ED8','#854D0E','#065F46'];
+
+const WORKSPACE_DEFAULT = { name: 'Pulse Agency', color: '#F59E0B' };
+
+function getWorkspace() {
+  const stored = localStorage.getItem('flowck_workspace');
+  if (!stored) return { ...WORKSPACE_DEFAULT };
+  return { ...WORKSPACE_DEFAULT, ...JSON.parse(stored) };
+}
+
+function saveWorkspace(ws) {
+  localStorage.setItem('flowck_workspace', JSON.stringify(ws));
+}
+
+function getExtraUsers() {
+  const stored = localStorage.getItem('flowck_extra_users');
+  return stored ? JSON.parse(stored) : [];
+}
+
+function saveExtraUsers(users) {
+  localStorage.setItem('flowck_extra_users', JSON.stringify(users));
+}
+
+function getUsers() {
+  const extra = getExtraUsers();
+  const defaultNames = new Set(USERS.map(u => u.name));
+  return [...USERS, ...extra.filter(u => !defaultNames.has(u.name))];
+}
+
+function getTeamMembers() {
+  return getUsers().filter(u => u.role !== 'cliente').map(u => u.name);
+}
+
 function getAuthorColor(name) {
-  const user = USERS.find(u => u.name === (name || '').trim());
+  const user = getUsers().find(u => u.name === (name || '').trim());
   return user ? user.color : '#6B6B6B';
 }
 
@@ -108,7 +151,8 @@ const PIECES = [
     fileVersion: 'v2',
     comments: [
       { id: 1, author: 'Julia B.', role: 'content', time: 'Hace 5 h', text: 'Versión v2 subida con las transiciones corregidas. Pendiente revisión final.', color: '#7C3AED' },
-      { id: 2, author: 'Cliente', role: 'cliente', time: 'Hace 2 h', text: 'Mucho mejor que la v1. Solo revisar el audio en los últimos 3 segundos.', color: '#6B6B6B' },
+      { id: 2, author: 'Ana R.',   role: 'diseño',  time: 'Hace 3 h', text: 'He ajustado el motion en la transición central y equilibrado los colores del fondo. Creo que encaja mejor con el brief.', color: '#BE185D' },
+      { id: 3, author: 'Cliente',  role: 'cliente', time: 'Hace 2 h', text: 'Mucho mejor que la v1. Solo revisar el audio en los últimos 3 segundos.', color: '#6B6B6B' },
     ],
   },
   {
@@ -178,7 +222,7 @@ const PIECES = [
     campaign: 'Onboarding',
     cliente: 'Banco XYZ',
     status: 'produccion',
-    pendienteDe: 'Carlos',
+    pendienteDe: 'Ana R.',
     deadline: '2026-06-25',
     thumbnail: 'https://picsum.photos/seed/flowck7/64/64',
     image: 'https://picsum.photos/seed/flowck7/900/560',
@@ -187,7 +231,9 @@ const PIECES = [
     copy: '¿Sabías que puedes hacer todo esto con nuestra app? Te contamos los 5 trucos que cambiarán tu forma de trabajar. 💡',
     fileFormat: 'PNG',
     fileVersion: 'v1',
-    comments: [],
+    comments: [
+      { id: 1, author: 'Ana R.', role: 'diseño', time: 'Hace 1 d', text: 'Empezando con los diseños del carrusel. Voy a proponer 3 variantes de layout antes de decidir la dirección visual.', color: '#BE185D' },
+    ],
   },
   {
     id: 8,
@@ -271,7 +317,7 @@ const PIECES = [
     channel: 'instagram',
     campaign: 'Sorteo 1 verano',
     status: 'solicitada',
-    pendienteDe: 'Carlos',
+    pendienteDe: 'David M.',
     deadline: '2026-07-02',
     thumbnail: 'https://picsum.photos/seed/flowck12/64/64',
     image: 'https://picsum.photos/seed/flowck12/900/560',
@@ -280,7 +326,9 @@ const PIECES = [
     copy: '¡Participa en nuestro sorteo de verano! 🎁 Sigue las instrucciones en bio. Suerte a todos. #sorteo #verano',
     fileFormat: 'PNG',
     fileVersion: 'v1',
-    comments: [],
+    comments: [
+      { id: 1, author: 'David M.', role: 'social', time: 'Hace 2 h', text: 'Solicitud recibida. Voy a preparar la mecánica del sorteo y las instrucciones para bio antes de arrancar con el diseño.', color: '#EA580C' },
+    ],
   },
   {
     id: 13,
@@ -336,7 +384,9 @@ const PIECES = [
     copy: 'Un evento para recordar. Gracias a todos los que formaron parte de este día tan especial. 🎥',
     fileFormat: 'MP4',
     fileVersion: 'v1',
-    comments: [],
+    comments: [
+      { id: 1, author: 'David M.', role: 'social', time: 'Hace 3 h', text: 'Tengo el material del evento. Propongo publicarlo el jueves por la mañana para aprovechar el horario de mayor alcance en Facebook.', color: '#EA580C' },
+    ],
   },
 ];
 

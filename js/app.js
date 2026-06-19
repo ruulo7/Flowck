@@ -110,14 +110,23 @@ function formatDeadline(dateStr) {
 /* ── Sidebar HTML ───────────────────────────────── */
 function renderSidebar(active) {
   const blockedCount = getBlockedPieces().length;
+  const ws = getWorkspace();
+  const words = (ws.name || '').trim().split(/\s+/);
+  const initials = words.length >= 2
+    ? (words[0][0] + words[1][0]).toUpperCase()
+    : (ws.name || 'W').slice(0, 2).toUpperCase();
   return `
   <aside class="sidebar">
     <div class="sidebar-brand">Flowck</div>
+    <div class="sidebar-workspace">
+      <div class="sidebar-workspace-logo" style="background:${ws.color || '#F59E0B'}">${initials}</div>
+      <span class="sidebar-workspace-name">${ws.name || 'Workspace'}</span>
+    </div>
     <nav class="sidebar-nav">
       <a href="index.html" class="nav-item ${active==='piezas'?'active':''}">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
-          <rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/>
+          <rect x="14" y="14" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/>
         </svg>
         Piezas
       </a>
@@ -132,7 +141,7 @@ function renderSidebar(active) {
       </a>
     </nav>
     <div class="sidebar-bottom">
-      <a href="#" class="nav-item">
+      <a href="ajustes.html" class="nav-item ${active==='ajustes'?'active':''}">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="3"/>
           <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
@@ -145,17 +154,107 @@ function renderSidebar(active) {
 
 /* ── Page topbar HTML ───────────────────────────── */
 function renderTopbar() {
+  const unread = getNotifications().filter(n => !n.read).length;
   return `
   <header class="page-topbar">
-    <button class="topbar-bell-btn" title="Notificaciones">
+    <button class="topbar-bell-btn" id="notifBellBtn" title="Notificaciones">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
         <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
       </svg>
-      <span class="topbar-notif-dot"></span>
+      <span class="topbar-notif-badge" id="notifBadge" style="display:${unread > 0 ? 'flex' : 'none'}">${unread}</span>
     </button>
     <div class="topbar-avatar" title="Perfil">MG</div>
-  </header>`;
+  </header>
+  <div class="notif-panel" id="notifPanel">
+    <div class="notif-panel-header">
+      <span class="notif-panel-title">Notificaciones</span>
+      <button class="btn btn-primary btn-sm" id="notifMarkAllBtn">Marcar todas como leídas</button>
+      <button class="notif-close-btn" id="notifCloseBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="notif-list" id="notifList"></div>
+  </div>`;
+}
+
+/* ── Notifications data & helpers ───────────────── */
+const NOTIF_DEFAULTS = [
+  { id:'n1', pieceId:1,  text:'La pieza "Banner principal Q1" ha sido bloqueada',                              date:'2026-06-18T08:00:00', read:false },
+  { id:'n2', pieceId:5,  text:'El bloqueo de "Story cuenta atrás" ha sido resuelto',                          date:'2026-06-18T05:00:00', read:false },
+  { id:'n3', pieceId:4,  text:'El estado de "Newsletter mensual de julio" cambió a "En revisión"',             date:'2026-06-17T15:00:00', read:false },
+  { id:'n4', pieceId:3,  text:'Carlos R. comentó en "Reel de presentación del producto"',                     date:'2026-06-16T10:00:00', read:false },
+  { id:'n5', pieceId:10, text:'Has sido asignada a "Ads Google"',                                             date:'2026-06-15T09:00:00', read:false },
+  { id:'n6', pieceId:6,  text:'Figuras como Pendiente de en "Carrusel de tips para sacar el máximo partido"', date:'2026-06-14T14:00:00', read:false },
+  { id:'n7', pieceId:9,  text:'La pieza "Vídeo testimonial cliente" ha sido editada',                         date:'2026-06-12T11:00:00', read:true  },
+  { id:'n8', pieceId:11, text:'Se ha subido un nuevo archivo a "Post de apertura de nuevo mercado europeo"',  date:'2026-06-10T09:00:00', read:true  },
+];
+
+function getNotifications() {
+  const stored = localStorage.getItem('flowck_notifications');
+  if (!stored) { const d = NOTIF_DEFAULTS.map(n => ({...n})); saveNotifications(d); return d; }
+  return JSON.parse(stored);
+}
+
+function saveNotifications(notifs) {
+  localStorage.setItem('flowck_notifications', JSON.stringify(notifs));
+}
+
+function formatNotifTime(dateStr) {
+  const d = new Date(dateStr);
+  const diffH = Math.floor((Date.now() - d) / 3600000);
+  const diffD = Math.floor((Date.now() - d) / 86400000);
+  if (diffH < 1) return 'Ahora';
+  if (diffH < 24) return `Hace ${diffH}h`;
+  if (diffD < 7) return `Hace ${diffD}d`;
+  const m = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+  return `${d.getDate()} ${m[d.getMonth()]}`;
+}
+
+function updateNotifBadge() {
+  const badge = document.getElementById('notifBadge');
+  if (!badge) return;
+  const count = getNotifications().filter(n => !n.read).length;
+  badge.textContent = count;
+  badge.style.display = count > 0 ? 'flex' : 'none';
+}
+
+function renderNotifList() {
+  const list = document.getElementById('notifList');
+  if (!list) return;
+  const notifs = getNotifications();
+  const unreadCount = notifs.filter(n => !n.read).length;
+  if (notifs.length === 0) {
+    list.innerHTML = `<div class="notif-empty">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+        <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+      </svg>
+      <span>No tienes notificaciones</span>
+    </div>`;
+  } else {
+    list.innerHTML = notifs.map(n => `<div class="notif-item${n.read ? ' notif-read' : ''}" data-id="${n.id}" data-piece="${n.pieceId}">
+      <span class="notif-dot${n.read ? ' read' : ''}"></span>
+      <div class="notif-content">
+        <p class="notif-text">${n.text}</p>
+        <span class="notif-time">${formatNotifTime(n.date)}</span>
+      </div>
+    </div>`).join('');
+  }
+  const markAllBtn = document.getElementById('notifMarkAllBtn');
+  if (markAllBtn) markAllBtn.disabled = unreadCount === 0;
+  updateNotifBadge();
+}
+
+function openNotifPanel() {
+  document.getElementById('notifPanel')?.classList.add('open');
+  renderNotifList();
+}
+
+function closeNotifPanel() {
+  document.getElementById('notifPanel')?.classList.remove('open');
 }
 
 /* ── Navigation helper ──────────────────────────── */
@@ -175,6 +274,46 @@ function closeAll() {
 document.addEventListener('DOMContentLoaded', function() {
   const scrollable = document.querySelector('.content');
   if (scrollable) scrollable.addEventListener('scroll', closeAll, { passive: true });
+
+  /* Bell button */
+  const bellBtn = document.getElementById('notifBellBtn');
+  if (bellBtn) bellBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const panel = document.getElementById('notifPanel');
+    if (panel?.classList.contains('open')) closeNotifPanel();
+    else openNotifPanel();
+  });
+
+  /* Close button */
+  const closeBtn = document.getElementById('notifCloseBtn');
+  if (closeBtn) closeBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    closeNotifPanel();
+  });
+
+  /* Mark all as read */
+  const markAllBtn = document.getElementById('notifMarkAllBtn');
+  if (markAllBtn) markAllBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    const notifs = getNotifications().map(n => ({ ...n, read: true }));
+    saveNotifications(notifs);
+    renderNotifList();
+  });
+
+  /* Click on notification item */
+  const notifList = document.getElementById('notifList');
+  if (notifList) notifList.addEventListener('click', function(e) {
+    const item = e.target.closest('.notif-item');
+    if (!item) return;
+    const id = item.dataset.id;
+    const pieceId = parseInt(item.dataset.piece, 10);
+    const notifs = getNotifications().map(n => n.id === id ? { ...n, read: true } : n);
+    saveNotifications(notifs);
+    closeNotifPanel();
+    window.location.href = 'detalle.html#' + pieceId;
+  });
+
+  updateNotifBadge();
 });
 
 document.addEventListener('click', function(e) {
@@ -185,6 +324,10 @@ document.addEventListener('click', function(e) {
       !e.target.closest('#filterDropdown') &&
       !e.target.closest('.col-filterable')) {
     closeAll();
+  }
+  /* Close notif panel on outside click */
+  if (!e.target.closest('#notifPanel') && !e.target.closest('#notifBellBtn')) {
+    closeNotifPanel();
   }
 });
 

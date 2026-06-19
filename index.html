@@ -602,7 +602,7 @@
   );
   const ownerSelect = new IconSelect(
     document.getElementById('fOwnerBtn'),
-    [...TEAM_MEMBERS, 'Sin asignar'].map(v => ({ value: v, label: v })),
+    [...getTeamMembers(), 'Sin asignar'].map(v => ({ value: v, label: v })),
     null
   );
   ownerSelect.setValue('Sin asignar', false);
