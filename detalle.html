@@ -64,11 +64,17 @@
         <div class="detail-section-title">Datos generales</div>
         <div class="detail-field">
           <div class="detail-field-label">Pendiente de</div>
-          <div class="detail-field-value" id="dPendiente">—</div>
+          <button class="detail-field-value detail-field-btn" id="pendienteBtn">
+            <span id="dPendiente">—</span>
+            <svg class="detail-field-chevron" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
         </div>
         <div class="detail-field">
-          <div class="detail-field-label">Diseñador</div>
-          <div class="detail-field-value" id="dDiseñador">—</div>
+          <div class="detail-field-label">Asignado a</div>
+          <button class="detail-field-value detail-field-btn" id="diseñadorBtn">
+            <span id="dDiseñador">—</span>
+            <svg class="detail-field-chevron" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
         </div>
         <div class="detail-field">
           <div class="detail-field-label">Deadline</div>
@@ -81,6 +87,10 @@
         <div class="detail-field">
           <div class="detail-field-label">Campaña</div>
           <div class="detail-field-value" id="dCampaña">—</div>
+        </div>
+        <div class="detail-field" id="clienteField" style="display:none">
+          <div class="detail-field-label">Cliente</div>
+          <div class="detail-field-value" id="dCliente">—</div>
         </div>
         <hr class="detail-divider">
       </section>
@@ -105,27 +115,32 @@
       <!-- Archivo -->
       <section>
         <div class="detail-section-title">Archivo</div>
-        <div class="detail-file-info">
-          <div class="detail-file-row">
-            <span class="detail-file-key">Formato</span>
-            <span class="detail-file-val" id="dFormat">—</span>
+        <div id="archivoContent" style="display:none">
+          <div class="detail-file-info">
+            <div class="detail-file-row">
+              <span class="detail-file-key">Formato</span>
+              <span class="detail-file-val" id="dFormat">—</span>
+            </div>
+            <div class="detail-file-row">
+              <span class="detail-file-key">Versión</span>
+              <span class="detail-file-val" id="dVersion">—</span>
+            </div>
           </div>
-          <div class="detail-file-row">
-            <span class="detail-file-key">Versión</span>
-            <span class="detail-file-val" id="dVersion">—</span>
+          <div class="detail-filename-row" id="filenameRow">
+            <span class="detail-filename" id="dFileName">—</span>
+            <button id="deleteFileBtn" class="file-trash-btn" title="Eliminar archivo">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14H6L5 6"/>
+                <path d="M10 11v6"/><path d="M14 11v6"/>
+                <path d="M9 6V4h6v2"/>
+              </svg>
+            </button>
           </div>
-        </div>
-        <div class="detail-filename-row" id="filenameRow" style="display:none">
-          <span class="detail-filename" id="dFileName">—</span>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;color:var(--text-on-dark-muted)">
-            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
-            <polyline points="7 10 12 15 17 10"/>
-            <line x1="12" y1="15" x2="12" y2="3"/>
-          </svg>
-        </div>
-        <div id="uploadNewVersionWrap" style="display:none;margin-top:6px">
-          <button type="button" id="uploadNewVersionBtn" class="upload-new-version-sidebar">Subir nueva versión</button>
-          <input type="file" id="newVersionInput" accept="image/*,video/*,.pdf" style="display:none">
+          <div id="uploadNewVersionWrap" style="margin-top:6px;display:none">
+            <button type="button" id="uploadNewVersionBtn" class="upload-new-version-sidebar">Subir nueva versión</button>
+            <input type="file" id="newVersionInput" accept="image/*,video/*,.pdf" style="display:none">
+          </div>
         </div>
       </section>
 
@@ -173,6 +188,23 @@
       </div>
     </aside>
 
+  </div>
+</div>
+
+<!-- Delete file confirmation modal -->
+<div class="modal-overlay" id="deleteFileOverlay">
+  <div class="modal" style="width:400px">
+    <div class="modal-header">
+      <span class="modal-title">Eliminar archivo</span>
+      <button class="modal-close" id="deleteFileClose">✕</button>
+    </div>
+    <p style="font-size:13.5px;color:#444;line-height:1.55;margin-bottom:20px">
+      Se eliminará el archivo adjunto a esta pieza. Esta acción no se puede deshacer.
+    </p>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="deleteFileCancel">Cancelar</button>
+      <button class="btn btn-danger" id="deleteFileConfirm">Eliminar</button>
+    </div>
   </div>
 </div>
 
@@ -232,10 +264,9 @@
     btn.style.cssText = `border:none;font-family:inherit;gap:5px;display:inline-flex;align-items:center;cursor:${isPublished ? 'default' : 'pointer'}`;
     document.getElementById('statusBadgeChevron').style.display = isPublished ? 'none' : '';
 
-    /* muestra todos los estados futuros del ciclo, nunca el actual ni los anteriores */
-    const future = STATUS_ORDER.slice(STATUS_ORDER.indexOf(piece.status) + 1);
+    /* muestra todos los estados excepto el actual */
     document.querySelectorAll('#statusMenu [data-status]').forEach(item => {
-      item.style.display = future.includes(item.dataset.status) ? 'flex' : 'none';
+      item.style.display = item.dataset.status !== piece.status ? 'flex' : 'none';
     });
 
     /* topbar block badge */
@@ -245,8 +276,15 @@
     document.getElementById('dPendiente').textContent  = piece.pendienteDe || '—';
     document.getElementById('dDiseñador').textContent  = piece.diseñador   || '—';
     const canalEl = document.getElementById('dCanal');
-    canalEl.innerHTML = channelIcon(piece.channel);
+    canalEl.innerHTML = channelIcon(piece.channel, true);
     document.getElementById('dCampaña').textContent   = piece.campaign  || '—';
+    const clienteField = document.getElementById('clienteField');
+    if (piece.cliente) {
+      document.getElementById('dCliente').textContent = piece.cliente;
+      clienteField.style.display = '';
+    } else {
+      clienteField.style.display = 'none';
+    }
     document.getElementById('dDeadline').textContent  = formatDeadlinePlain(piece.deadline) || '—';
 
     /* brief (condicional) */
@@ -269,16 +307,17 @@
     }
 
     /* archivo */
-    document.getElementById('dFormat').textContent = piece.fileFormat || '—';
-    document.getElementById('dVersion').textContent = piece.fileVersion || '—';
-    const fnRow = document.getElementById('filenameRow');
-    if (piece.fileName) {
+    const hasFile = !!piece.fileName;
+    document.getElementById('archivoContent').style.display = hasFile ? 'block' : 'none';
+    if (hasFile) {
+      document.getElementById('dFormat').textContent  = piece.fileFormat  || '—';
+      document.getElementById('dVersion').textContent = piece.fileVersion || '—';
       document.getElementById('dFileName').textContent = piece.fileName;
-      fnRow.style.display = 'flex';
-    } else {
-      fnRow.style.display = 'none';
     }
-    fnRow._piece = piece;
+
+    /* upload new version: solo si hay archivo y estado permite */
+    const canUpload = hasFile && !['aprobada','publicada'].includes(piece.status);
+    document.getElementById('uploadNewVersionWrap').style.display = canUpload ? 'block' : 'none';
 
     /* creative */
     const img = document.getElementById('creativeImg');
@@ -294,10 +333,6 @@
     /* copy — editable, no sobreescribir si el usuario está escribiendo */
     const copyEl = document.getElementById('dCopy');
     if (document.activeElement !== copyEl) copyEl.value = piece.copy || '';
-
-    /* upload new version button */
-    const canUpload = !['aprobada','publicada'].includes(piece.status);
-    document.getElementById('uploadNewVersionWrap').style.display = canUpload ? 'block' : 'none';
 
     /* comments */
     renderComments();
@@ -322,7 +357,7 @@
         <div class="comment-header">
           <div class="comment-avatar" style="background:${getAuthorColor(c.author)}">${initials.toUpperCase()}</div>
           <span class="comment-author">${c.author}</span>
-          <span class="comment-role-badge role-${c.role}">${roleLabel(c.role)}</span>
+          <span class="comment-role-badge role-${c.role}">${roleLabel(c.role)}</span>${c.author === 'María G.' ? ' <span style="color:#9B9B97;font-size:11.5px">(Tú)</span>' : ''}
           <span class="comment-time">${c.time}</span>
         </div>
         <div class="comment-text">${c.text}</div>
@@ -333,7 +368,8 @@
   }
 
   function roleLabel(role) {
-    return { manager: 'Manager', content: 'Content', cliente: 'Cliente' }[role] || role;
+    const map = { manager: 'Manager', produccion: 'Producción', content: 'Producción', diseño: 'Producción', social: '', cliente: 'Cliente' };
+    return role in map ? map[role] : role;
   }
 
   /* ── Status dropdown ─────────────────────────────── */
@@ -349,7 +385,11 @@
     if (!item) return;
     const pieces = getPieces();
     const idx    = pieces.findIndex(p => p.id === pieceId);
-    if (idx !== -1) { pieces[idx].status = item.dataset.status; savePieces(pieces); }
+    if (idx !== -1) {
+      pieces[idx].status     = item.dataset.status;
+      pieces[idx].pendienteDe = getDefaultPendiente(pieces[idx]);
+      savePieces(pieces);
+    }
     document.getElementById('statusMenu').classList.remove('open');
     populate();
   });
@@ -423,11 +463,15 @@
       const pieces = getPieces();
       const idx = pieces.findIndex(p => p.id === pieceId);
       if (idx !== -1) {
-        pieces[idx].image      = dataUrl;
-        pieces[idx].thumbnail  = dataUrl;
-        pieces[idx].fileName   = file.name;
-        pieces[idx].fileFormat = ext;
+        pieces[idx].image       = dataUrl;
+        pieces[idx].thumbnail   = dataUrl;
+        pieces[idx].fileName    = file.name;
+        pieces[idx].fileFormat  = ext;
         pieces[idx].fileVersion = newVersion;
+        /* Nueva versión en revisión → actualizar pendienteDe al revisor */
+        if (pieces[idx].status === 'revision') {
+          pieces[idx].pendienteDe = getDefaultPendiente(pieces[idx]);
+        }
         savePieces(pieces);
         piece = pieces[idx];
       }
@@ -444,8 +488,7 @@
   }
 
   /* ── File upload ─────────────────────────────────── */
-  function handleFileUpload(event) {
-    const file = event.target.files[0];
+  function processFile(file) {
     if (!file) return;
 
     /* Auto-transición de estado al subir archivo */
@@ -453,7 +496,8 @@
       const pieces = getPieces();
       const idx = pieces.findIndex(p => p.id === pieceId);
       if (idx !== -1) {
-        pieces[idx].status = 'revision';
+        pieces[idx].status      = 'revision';
+        pieces[idx].pendienteDe = getDefaultPendiente(pieces[idx]);
         savePieces(pieces);
         piece = pieces[idx];
       }
@@ -465,9 +509,9 @@
       const pieces = getPieces();
       const idx = pieces.findIndex(p => p.id === pieceId);
       if (idx !== -1) {
-        pieces[idx].image     = dataUrl;
-        pieces[idx].thumbnail = dataUrl;
-        pieces[idx].fileName  = file.name;
+        pieces[idx].image      = dataUrl;
+        pieces[idx].thumbnail  = dataUrl;
+        pieces[idx].fileName   = file.name;
         pieces[idx].fileFormat = file.name.split('.').pop().toUpperCase();
         if (!pieces[idx].fileVersion) pieces[idx].fileVersion = 'v1';
         savePieces(pieces);
@@ -482,8 +526,30 @@
     reader.readAsDataURL(file);
   }
 
+  function handleFileUpload(event) {
+    const file = event.target.files[0];
+    event.target.value = '';
+    processFile(file);
+  }
+
+  /* ── Drag & drop ─────────────────────────────────── */
+  const uploadZone = document.getElementById('uploadZone');
+  uploadZone.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    this.classList.add('drag-over');
+  });
+  uploadZone.addEventListener('dragleave', function() {
+    this.classList.remove('drag-over');
+  });
+  uploadZone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    this.classList.remove('drag-over');
+    processFile(e.dataTransfer.files[0]);
+  });
+
   /* ── View file (demo) ────────────────────────────── */
-  document.getElementById('filenameRow').addEventListener('click', function() {
+  document.getElementById('filenameRow').addEventListener('click', function(e) {
+    if (e.target.closest('#deleteFileBtn')) return;
     if (piece && piece.image) window.open(piece.image, '_blank');
   });
 
@@ -517,6 +583,116 @@
     input.style.height = 'auto';
     renderComments();
   }
+
+  /* ── Helpers ─────────────────────────────────────── */
+  /* ── Inline field select ──────────────────────────── */
+  let _fsPop = null;
+  let _fsAnchor = null;
+
+  function openFieldSelect(anchorEl, options, currentVal, onSelect) {
+    if (!_fsPop) {
+      _fsPop = document.createElement('div');
+      _fsPop.className = 'select-popover';
+      document.body.appendChild(_fsPop);
+      document.addEventListener('click', () => { _fsPop.classList.remove('open'); _fsAnchor = null; });
+    }
+    if (_fsAnchor === anchorEl && _fsPop.classList.contains('open')) {
+      _fsPop.classList.remove('open'); _fsAnchor = null; return;
+    }
+    _fsAnchor = anchorEl;
+    _fsPop.innerHTML = options.map(o =>
+      `<div class="select-option-row${o === currentVal ? ' sel' : ''}" data-v="${o.replace(/"/g,'&quot;')}"><span>${o}</span></div>`
+    ).join('');
+    _fsPop.querySelectorAll('[data-v]').forEach(row => row.addEventListener('click', e => {
+      e.stopPropagation();
+      _fsPop.classList.remove('open'); _fsAnchor = null;
+      onSelect(row.dataset.v);
+    }));
+    const r = anchorEl.getBoundingClientRect();
+    _fsPop.style.left  = 'auto';
+    _fsPop.style.right = (window.innerWidth - r.right) + 'px';
+    _fsPop.style.top   = (r.bottom + 4) + 'px';
+    _fsPop.style.width = 'max-content';
+    _fsPop.style.minWidth = '150px';
+    _fsPop.classList.add('open');
+  }
+
+  /* ── Asignado a (diseñador) ───────────────────────── */
+  document.getElementById('diseñadorBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    const options = ['Sin asignar', ...getTeamMembers()];
+    const current = piece.diseñador || 'Sin asignar';
+    openFieldSelect(this, options, current, function(val) {
+      const pieces = getPieces();
+      const idx = pieces.findIndex(p => p.id === pieceId);
+      if (idx === -1) return;
+      const p = pieces[idx];
+      const wasUnassigned = !p.diseñador || p.diseñador === 'Sin asignar' || p.diseñador === '—';
+      const nowUnassigned = val === 'Sin asignar';
+      p.diseñador = val;
+      if (!nowUnassigned && wasUnassigned && !p.fileName && p.status === 'solicitada') {
+        /* Asignando desde Sin asignar + sin archivo → En producción */
+        p.status = 'produccion';
+      } else if (nowUnassigned && !wasUnassigned) {
+        /* Desasignando → re-evalúa estado */
+        p.status = p.fileName ? 'revision' : 'solicitada';
+      }
+      p.pendienteDe = getDefaultPendiente(p);
+      savePieces(pieces);
+      piece = pieces[idx];
+      populate();
+    });
+  });
+
+  /* ── Eliminar archivo ────────────────────────────── */
+  document.getElementById('deleteFileBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.getElementById('deleteFileOverlay').classList.add('open');
+  });
+
+  function closeDeleteFile() {
+    document.getElementById('deleteFileOverlay').classList.remove('open');
+  }
+  document.getElementById('deleteFileClose').addEventListener('click', closeDeleteFile);
+  document.getElementById('deleteFileCancel').addEventListener('click', closeDeleteFile);
+  document.getElementById('deleteFileOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeDeleteFile();
+  });
+
+  document.getElementById('deleteFileConfirm').addEventListener('click', function() {
+    const pieces = getPieces();
+    const idx = pieces.findIndex(p => p.id === pieceId);
+    if (idx === -1) return;
+    const p = pieces[idx];
+    p.image       = null;
+    p.thumbnail   = null;
+    p.fileName    = null;
+    p.fileFormat  = null;
+    p.fileVersion = null;
+    const hasDesigner = p.diseñador && p.diseñador !== 'Sin asignar' && p.diseñador !== '—';
+    p.status      = hasDesigner ? 'produccion' : 'solicitada';
+    p.pendienteDe = getDefaultPendiente(p);
+    savePieces(pieces);
+    piece = pieces[idx];
+    closeDeleteFile();
+    populate();
+  });
+
+  /* ── Pendiente de ─────────────────────────────────── */
+  document.getElementById('pendienteBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    const options = ['—', ...getTeamMembers(), 'Cliente'];
+    const current = piece.pendienteDe || '—';
+    openFieldSelect(this, options, current, function(val) {
+      const pieces = getPieces();
+      const idx = pieces.findIndex(p => p.id === pieceId);
+      if (idx === -1) return;
+      pieces[idx].pendienteDe = val;
+      savePieces(pieces);
+      piece = pieces[idx];
+      populate();
+    });
+  });
 
   /* ── Boot ────────────────────────────────────────── */
   populate();

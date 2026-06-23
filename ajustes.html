@@ -171,7 +171,7 @@
       <div class="member-avatar" style="background:${u.color}">${getMemberInitials(u.name)}</div>
       <div class="member-info">
         <span class="member-name">${displayName}</span>
-        <span class="member-role">${ROLE_LABELS[u.role] || u.role}</span>
+        <span class="member-role">${ROLE_LABELS[u.role] || u.role}</span>${u.name === 'María G.' ? ' <span style="color:#9B9B97;font-size:11.5px">(Tú)</span>' : ''}
       </div>
       <button class="member-trash-btn" data-name="${u.name.replace(/"/g, '&quot;')}" title="Eliminar miembro">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

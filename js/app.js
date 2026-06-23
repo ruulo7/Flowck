@@ -1,81 +1,37 @@
 /* ── Channel SVG icons ──────────────────────────── */
-let _iconSeq = 0;
-function channelIcon(channel) {
-  const s = ++_iconSeq;
-  const icons = {
-    instagram: `<span class="ch-icon" title="Instagram" style="border-radius:6px;overflow:hidden">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <radialGradient id="ig_g0_${s}" cx="0" cy="1" r="1" gradientUnits="objectBoundingBox">
-            <stop offset="0" stop-color="#FFD600"/>
-            <stop offset="0.5" stop-color="#FF0100"/>
-            <stop offset="1" stop-color="#D800B9"/>
-          </radialGradient>
-          <radialGradient id="ig_g1_${s}" cx="0.5" cy="1" r="0.7" gradientUnits="objectBoundingBox">
-            <stop offset="0" stop-color="#FF6400"/>
-            <stop offset="0.5" stop-color="#FF0100" stop-opacity="0"/>
-            <stop offset="1" stop-color="#FF0100" stop-opacity="0"/>
-          </radialGradient>
-          <radialGradient id="ig_g2_${s}" cx="0.5" cy="0" r="1.2" gradientUnits="objectBoundingBox">
-            <stop offset="0" stop-color="#8D00B3"/>
-            <stop offset="1" stop-color="#8D00B3" stop-opacity="0"/>
-          </radialGradient>
-          <radialGradient id="ig_g3_${s}" cx="0.3" cy="0" r="1.5" gradientUnits="objectBoundingBox">
-            <stop offset="0" stop-color="#FF6400"/>
-            <stop offset="0.5" stop-color="#FF0100" stop-opacity="0"/>
-            <stop offset="1" stop-color="#FF0100" stop-opacity="0"/>
-          </radialGradient>
-        </defs>
-        <rect width="24" height="24" rx="5" fill="url(#ig_g0_${s})"/>
-        <rect width="24" height="24" rx="5" fill="url(#ig_g1_${s})"/>
-        <rect width="24" height="24" rx="5" fill="url(#ig_g2_${s})"/>
-        <rect width="24" height="24" rx="5" fill="url(#ig_g3_${s})"/>
-        <rect x="3.5" y="3.5" width="17" height="17" rx="4" stroke="white" stroke-width="1.5" fill="none"/>
-        <circle cx="12" cy="12" r="4" stroke="white" stroke-width="1.5" fill="none"/>
-        <circle cx="17" cy="7" r="1.2" fill="white"/>
-      </svg></span>`,
-    facebook: `<span class="ch-icon" title="Facebook" style="border-radius:50%;overflow:hidden">
-      <svg width="24" height="24" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M27 13.5496C27 6.06638 20.9558 1.90735e-06 13.5 1.90735e-06C6.04417 1.90735e-06 0 6.06638 0 13.5496C0 19.9041 4.35861 25.236 10.2387 26.7002V17.6902H7.45492V13.5496H10.2387V11.7655C10.2387 7.1536 12.3182 5.01602 16.8293 5.01602C17.6846 5.01602 19.1603 5.1843 19.7641 5.35264V9.1061C19.4454 9.07245 18.892 9.05559 18.2044 9.05559C15.9908 9.05559 15.1355 9.89718 15.1355 12.0853V13.5496H19.5451L18.7876 17.6902H15.1355V27C21.8199 26.1897 27 20.4772 27 13.5496Z" fill="#0866FF"/>
-      </svg></span>`,
-    x: `<span class="ch-icon" title="X" style="background:#000;border-radius:6px;overflow:hidden">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M14.2833 10.1571L23.2178 0H21.1006L13.3427 8.81931L7.14656 0H0L9.36984 13.3364L0 23.9877H2.11732L10.3098 14.6742L16.8534 23.9877H24L14.2827 10.1571H14.2833ZM11.3833 13.4538L10.4339 12.1258L2.88022 1.55881H6.1323L12.2282 10.0867L13.1776 11.4147L21.1016 22.4998H17.8495L11.3833 13.4544V13.4538Z" fill="white"/>
-      </svg></span>`,
-    linkedin: `<span class="ch-icon" title="LinkedIn" style="border-radius:6px;overflow:hidden">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M20.4491 20.4495H16.8931V14.8804C16.8931 13.5525 16.8694 11.8429 15.0436 11.8429C13.1915 11.8429 12.9081 13.2899 12.9081 14.7838V20.4491H9.35213V8.99697H12.7658V10.562H12.8137C13.1553 9.97787 13.649 9.49732 14.2421 9.17154C14.8353 8.84577 15.5057 8.68697 16.1819 8.71206C19.7861 8.71206 20.4506 11.0828 20.4506 14.167L20.4491 20.4495ZM5.33963 7.43162C4.19991 7.43181 3.27581 6.508 3.27562 5.36828C3.27544 4.22856 4.19916 3.30447 5.33887 3.30428C6.47859 3.304 7.40269 4.22781 7.40287 5.36753C7.40297 5.91484 7.18566 6.43978 6.79872 6.82687C6.41179 7.21396 5.88694 7.4315 5.33963 7.43162ZM7.11769 20.4496H3.55791V8.99697H7.11759V20.4495L7.11769 20.4496ZM22.2219 0.00174674H1.77103C0.804469 -0.00912826 0.0118125 0.765153 0 1.73172V22.2679C0.0114375 23.235 0.804 24.01 1.77094 23.9999H22.2219C23.1909 24.0119 23.9866 23.2368 24 22.2679V1.73012C23.9862 0.761684 23.1905 -0.0125033 22.2219 0.00015299" fill="#0A66C2"/>
-      </svg></span>`,
-    tiktok: `<span class="ch-icon" title="TikTok" style="background:#000;border-radius:6px;overflow:hidden">
-      <svg width="24" height="24" viewBox="0 0 24 27" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M9.34533 10.6315V9.57769C8.98152 9.52825 8.61226 9.49777 8.2355 9.49777C3.69467 9.49777 0 13.1705 0 17.6851C0 20.455 1.39189 22.906 3.51617 24.3878C2.1454 22.925 1.30468 20.9657 1.30468 18.8134C1.30468 14.3638 4.89443 10.7351 9.34601 10.6315H9.34533Z" fill="#25F4EE"/>
-        <path d="M9.53952 22.5525C11.5657 22.5525 13.2185 20.9501 13.2935 18.9542L13.301 1.12898H16.5766C16.5085 0.762586 16.471 0.386034 16.471 0H11.997L11.9895 17.8253C11.9145 19.8211 10.2617 21.4235 8.23552 21.4235C7.606 21.4235 7.0126 21.2671 6.49072 20.9941C7.17406 21.9362 8.28457 22.5525 9.53952 22.5525ZM22.696 7.17887V6.18805C21.4465 6.18805 20.2822 5.81895 19.3059 5.18572C20.1752 6.17789 21.3559 6.89375 22.696 7.17887Z" fill="#25F4EE"/>
-        <path d="M19.3066 5.18571C18.3542 4.09872 17.7757 2.67988 17.7757 1.1283H16.5773C16.8928 2.82278 17.9045 4.27684 19.3066 5.18571ZM8.23555 13.946C6.16169 13.946 4.47412 15.6235 4.47412 17.6851C4.47412 19.1208 5.29372 20.3683 6.49076 20.9941C6.04451 20.3792 5.7788 19.6274 5.7788 18.8134C5.7788 16.7518 7.46637 15.0743 9.54024 15.0743C9.92721 15.0743 10.2985 15.1379 10.6501 15.247V10.706C10.2863 10.6566 9.91699 10.6261 9.54024 10.6261C9.47483 10.6261 9.41079 10.6295 9.34607 10.6308V14.118C8.99452 14.0089 8.62321 13.9453 8.23624 13.9453L8.23555 13.946Z" fill="#FE2C55"/>
-        <path d="M22.6959 7.17886V10.6356C20.3761 10.6356 18.2259 9.89803 16.4709 8.64579V17.6851C16.4709 22.1996 12.7762 25.8717 8.2354 25.8717C6.48038 25.8717 4.85345 25.3218 3.51538 24.3878C5.01968 25.9936 7.16304 27 9.5394 27C14.0809 27 17.7749 23.3273 17.7749 18.8134V9.77477C19.5299 11.027 21.6801 11.7645 23.9999 11.7645V7.31635C23.5523 7.31635 23.1163 7.26826 22.6959 7.17886Z" fill="#FE2C55"/>
-        <path d="M16.471 17.6851V8.64579C18.226 9.89803 20.3761 10.6356 22.696 10.6356V7.17886C21.3558 6.89374 20.1752 6.17856 19.3058 5.18571C17.9037 4.27684 16.892 2.82346 16.5766 1.1283H13.3009L13.2934 18.9536C13.2185 20.9494 11.5656 22.5518 9.53946 22.5518C8.28451 22.5518 7.174 21.9355 6.49066 20.9934C5.29362 20.367 4.47402 19.1195 4.47402 17.6844C4.47402 15.6228 6.16159 13.9453 8.23546 13.9453C8.62243 13.9453 8.99374 14.0089 9.34529 14.118V10.6308C4.8937 10.7344 1.30396 14.3632 1.30396 18.8127C1.30396 20.965 2.14467 22.9243 3.51544 24.3872C4.85282 25.3204 6.48044 25.871 8.23546 25.871C12.7763 25.871 16.471 22.1983 16.471 17.6844V17.6851Z" fill="black"/>
-      </svg></span>`,
-    youtube: `<span class="ch-icon" title="YouTube" style="background:#FF0000;border-radius:6px;overflow:hidden">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="24" height="24" fill="#FF0000"/>
-        <path d="M21.8 7.2C21.6 6.4 20.9 5.8 20.1 5.6C18.6 5.2 12 5.2 12 5.2C12 5.2 5.4 5.2 3.9 5.6C3.1 5.8 2.4 6.4 2.2 7.2C1.8 8.7 1.8 12 1.8 12C1.8 12 1.8 15.3 2.2 16.8C2.4 17.6 3.1 18.2 3.9 18.4C5.4 18.8 12 18.8 12 18.8C12 18.8 18.6 18.8 20.1 18.4C20.9 18.2 21.6 17.6 21.8 16.8C22.2 15.3 22.2 12 22.2 12C22.2 12 22.2 8.7 21.8 7.2Z" fill="white"/>
-        <path d="M10 15.5V8.5L16 12L10 15.5Z" fill="#FF0000"/>
-      </svg></span>`,
-    email: `<span class="ch-icon" title="Email" style="background:#4F46E5;border-radius:6px;overflow:hidden">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="24" height="24" fill="#4F46E5"/>
-        <rect x="3" y="6" width="18" height="13" rx="2" stroke="white" stroke-width="1.5" fill="none"/>
-        <path d="M3 9L12 14L21 9" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-      </svg></span>`,
-    otro: `<span class="ch-icon" title="Otro" style="background:#6B6B6B;border-radius:6px;overflow:hidden">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="24" height="24" fill="#6B6B6B"/>
-        <circle cx="12" cy="12" r="8" stroke="white" stroke-width="1.5" fill="none"/>
-        <path d="M12 4C12 4 9 7.5 9 12C9 16.5 12 20 12 20" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M12 4C12 4 15 7.5 15 12C15 16.5 12 20 12 20" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M4 12H20" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
-      </svg></span>`,
-  };
-  return icons[channel] || `<span class="ch-icon" style="background:#999;border-radius:6px"></span>`;
+/* Simple Icons paths (viewBox 0 0 24 24). LinkedIn omitted — not in Simple Icons (ToS). */
+const _SI = {
+  instagram: { hex: 'FF0069', path: 'M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077' },
+  facebook:  { hex: '0866FF', path: 'M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z' },
+  tiktok:    { hex: '000000', path: 'M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z' },
+  x:         { hex: '000000', path: 'M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z' },
+  youtube:   { hex: 'FF0000', path: 'M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z' },
+};
+
+function channelIcon(channel, dark) {
+  if (_SI[channel]) {
+    const fill = dark ? '#FFFFFF' : '#' + _SI[channel].hex;
+    const label = { instagram:'Instagram', facebook:'Facebook', tiktok:'TikTok', x:'X', youtube:'YouTube' }[channel] || channel;
+    return `<span class="ch-icon" title="${label}"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="${_SI[channel].path}" fill="${fill}"/></svg></span>`;
+  }
+
+  /* LinkedIn — not in Simple Icons (ToS); compound path needs evenodd fill-rule.
+     Blue bg stays in both contexts: readable on dark, on-brand on light. */
+  if (channel === 'linkedin') {
+    return `<span class="ch-icon" title="LinkedIn"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M20.4491 20.4495H16.8931V14.8804C16.8931 13.5525 16.8694 11.8429 15.0436 11.8429C13.1915 11.8429 12.9081 13.2899 12.9081 14.7838V20.4491H9.35213V8.99697H12.7658V10.562H12.8137C13.1553 9.97787 13.649 9.49732 14.2421 9.17154C14.8353 8.84577 15.5057 8.68697 16.1819 8.71206C19.7861 8.71206 20.4506 11.0828 20.4506 14.167L20.4491 20.4495ZM5.33963 7.43162C4.19991 7.43181 3.27581 6.508 3.27562 5.36828C3.27544 4.22856 4.19916 3.30447 5.33887 3.30428C6.47859 3.304 7.40269 4.22781 7.40287 5.36753C7.40297 5.91484 7.18566 6.43978 6.79872 6.82687C6.41179 7.21396 5.88694 7.4315 5.33963 7.43162ZM7.11769 20.4496H3.55791V8.99697H7.11759V20.4495L7.11769 20.4496ZM22.2219 0.00174674H1.77103C0.804469-0.00912826 0.0118125 0.765153 0 1.73172V22.2679C0.0114375 23.235 0.804 24.01 1.77094 23.9999H22.2219C23.1909 24.0119 23.9866 23.2368 24 22.2679V1.73012C23.9862 0.761684 23.1905-0.0125033 22.2219 0.00015299" fill="#0A66C2"/></svg></span>`;
+  }
+
+  /* Email — unchanged */
+  if (channel === 'email') {
+    return `<span class="ch-icon" title="Email" style="background:#4F46E5;overflow:hidden"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" fill="#4F46E5"/><rect x="3" y="6" width="18" height="13" rx="2" stroke="white" stroke-width="1.5" fill="none"/><path d="M3 9L12 14L21 9" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></span>`;
+  }
+
+  /* Otro — unchanged */
+  if (channel === 'otro') {
+    return `<span class="ch-icon" title="Otro" style="background:#6B6B6B;overflow:hidden"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" fill="#6B6B6B"/><circle cx="12" cy="12" r="8" stroke="white" stroke-width="1.5" fill="none"/><path d="M12 4C12 4 9 7.5 9 12C9 16.5 12 20 12 20" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M12 4C12 4 15 7.5 15 12C15 16.5 12 20 12 20" stroke="white" stroke-width="1.5" stroke-linecap="round"/><path d="M4 12H20" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></span>`;
+  }
+
+  return `<span class="ch-icon" style="background:#999"></span>`;
 }
 
 /* ── Status badge HTML ──────────────────────────── */
@@ -207,14 +163,14 @@ function renderTopbar() {
 
 /* ── Notifications data & helpers ───────────────── */
 const NOTIF_DEFAULTS = [
-  { id:'n1', pieceId:1,  text:'La pieza "Banner principal Q1" ha sido bloqueada',                              date:'2026-06-18T08:00:00', read:false },
-  { id:'n2', pieceId:5,  text:'El bloqueo de "Story cuenta atrás" ha sido resuelto',                          date:'2026-06-18T05:00:00', read:false },
-  { id:'n3', pieceId:4,  text:'El estado de "Newsletter mensual de julio" cambió a "En revisión"',             date:'2026-06-17T15:00:00', read:false },
-  { id:'n4', pieceId:3,  text:'Carlos R. comentó en "Reel de presentación del producto"',                     date:'2026-06-16T10:00:00', read:false },
-  { id:'n5', pieceId:10, text:'Has sido asignada a "Ads Google"',                                             date:'2026-06-15T09:00:00', read:false },
-  { id:'n6', pieceId:6,  text:'Figuras como Pendiente de en "Carrusel de tips para sacar el máximo partido"', date:'2026-06-14T14:00:00', read:false },
-  { id:'n7', pieceId:9,  text:'La pieza "Vídeo testimonial cliente" ha sido editada',                         date:'2026-06-12T11:00:00', read:true  },
-  { id:'n8', pieceId:11, text:'Se ha subido un nuevo archivo a "Post de apertura de nuevo mercado europeo"',  date:'2026-06-10T09:00:00', read:true  },
+  { id:'n1', pieceId:3,  text:'Julia B. comentó en "Reel de presentación del producto más destacado"',         date:'2026-06-18T09:00:00', read:false },
+  { id:'n2', pieceId:13, text:'La pieza "Infografía explicativa del proceso de onboarding" ha sido bloqueada', date:'2026-06-18T07:00:00', read:false },
+  { id:'n3', pieceId:9,  text:'Carlos R. comentó en "Vídeo testimonial cliente"',                              date:'2026-06-17T16:00:00', read:false },
+  { id:'n4', pieceId:3,  text:'Ana R. comentó en "Reel de presentación del producto más destacado"',           date:'2026-06-17T11:00:00', read:false },
+  { id:'n5', pieceId:3,  text:'El estado de "Reel de presentación del producto" cambió a "En revisión"',       date:'2026-06-16T10:00:00', read:false },
+  { id:'n6', pieceId:13, text:'Carlos R. comentó en "Infografía explicativa del proceso de onboarding"',       date:'2026-06-15T14:00:00', read:false },
+  { id:'n7', pieceId:9,  text:'La pieza "Vídeo testimonial cliente" ha sido bloqueada',                        date:'2026-06-12T11:00:00', read:true  },
+  { id:'n8', pieceId:9,  text:'El estado de "Vídeo testimonial cliente" cambió a "En revisión"',               date:'2026-06-10T09:00:00', read:true  },
 ];
 
 function getNotifications() {
@@ -285,6 +241,15 @@ function closeNotifPanel() {
 /* ── Navigation helper ──────────────────────────── */
 function goToDetail(id) {
   window.location.href = 'detalle.html#' + id;
+}
+
+/* ── Default "Pendiente de" por estado ─────────────── */
+function getDefaultPendiente(p) {
+  const manager = (USERS.find(u => u.role === 'manager') || {}).name || 'María G.';
+  if (p.status === 'publicada' || p.status === 'solicitada') return '—';
+  if (p.status === 'revision') return p.cliente ? 'Cliente' : manager;
+  /* produccion, aprobada → el asignado */
+  return (p.diseñador && p.diseñador !== 'Sin asignar') ? p.diseñador : '—';
 }
 
 /* ── Close all open dropdowns/popovers ──────────── */

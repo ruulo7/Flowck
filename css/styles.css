@@ -295,8 +295,6 @@ body {
   font-size: 11.5px;
   font-weight: 600;
   color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
 }
@@ -545,7 +543,6 @@ body {
 .form-label {
   display: block; font-size: 11.5px; font-weight: 600;
   color: var(--text-secondary); margin-bottom: 6px;
-  text-transform: uppercase; letter-spacing: 0.5px;
 }
 .form-input, .form-select, .form-textarea {
   width: 100%; padding: 8px 11px;
@@ -955,6 +952,25 @@ button.badge {
 .detail-field-value {
   font-size: 13px; font-weight: 700; color: var(--text-on-dark); text-align: right;
 }
+.file-trash-btn {
+  background: none; border: none; padding: 0;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; border-radius: 4px;
+}
+.detail-filename-row .file-trash-btn svg { color: #6B6B6B; transition: color 0.12s; }
+.detail-filename-row .file-trash-btn:hover svg { color: #DC2626; }
+
+.detail-field-btn {
+  background: none; border: none; padding: 0;
+  font-family: inherit; font-size: 13px; font-weight: 700;
+  color: var(--text-on-dark); text-align: right;
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 4px;
+  transition: opacity 0.12s;
+}
+.detail-field-btn:hover { opacity: 0.7; }
+.detail-field-chevron { opacity: 0.45; flex-shrink: 0; }
 
 .detail-block-box {
   background: #FEE2E2;
@@ -1126,11 +1142,12 @@ button.badge {
 }
 .comment-author { font-size: 12.5px; font-weight: 600; color: var(--text-on-dark); }
 .comment-role-badge {
-  font-size: 10px; font-weight: 600; text-transform: uppercase;
-  letter-spacing: 0.4px; padding: 2px 7px; border-radius: var(--r-full);
+  font-size: 10px; font-weight: 600;
+  padding: 2px 7px; border-radius: var(--r-full);
 }
 .role-manager,
 .role-content,
+.role-produccion,
 .role-cliente  { background: rgba(255,255,255,0.08); color: #C7C7CC; }
 .comment-time  { font-size: 11px; color: var(--text-on-dark-muted); margin-left: auto; }
 .comment-text  { font-size: 12.5px; line-height: 1.5; color: var(--text-on-dark-muted); padding-left: 30px; }
@@ -1224,6 +1241,7 @@ button.badge {
   padding: 32px 24px;
 }
 .detail-upload-zone:hover { border-color: #aaa; background: var(--row-hover); }
+.detail-upload-zone.drag-over { border-color: #888; background: #EEEEED; }
 
 /* ── SCROLLBAR ──────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }

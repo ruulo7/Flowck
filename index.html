@@ -268,7 +268,7 @@
   function getFilteredPieces() {
     let pieces = getPieces();
     if (currentTab === 'activas')   pieces = pieces.filter(p => p.status !== 'publicada');
-    if (currentTab === 'mitrabajo') pieces = pieces.filter(p => p.pendienteDe === 'Julia B.');
+    if (currentTab === 'mitrabajo') pieces = pieces.filter(p => p.pendienteDe === 'María G.');
     if (currentSearch) {
       const q = currentSearch.toLowerCase();
       pieces = pieces.filter(p => p.name.toLowerCase().includes(q) || p.campaign.toLowerCase().includes(q));
@@ -559,9 +559,8 @@
     const rect = actionMenu.getBoundingClientRect();
 
     const piece = getPieceById(activePieceId);
-    const future = piece ? STATUS_ORDER.slice(STATUS_ORDER.indexOf(piece.status) + 1) : [];
     document.querySelectorAll('#statusDropdown [data-status]').forEach(item => {
-      item.style.display = future.includes(item.dataset.status) ? 'flex' : 'none';
+      item.style.display = (!piece || item.dataset.status !== piece.status) ? 'flex' : 'none';
     });
 
     statusMenu.style.position   = 'fixed';
@@ -583,7 +582,11 @@
     if (!item || !activePieceId) return;
     const pieces = getPieces();
     const idx    = pieces.findIndex(p => p.id === activePieceId);
-    if (idx !== -1) { pieces[idx].status = item.dataset.status; savePieces(pieces); }
+    if (idx !== -1) {
+      pieces[idx].status      = item.dataset.status;
+      pieces[idx].pendienteDe = getDefaultPendiente(pieces[idx]);
+      savePieces(pieces);
+    }
     closeAll();
     renderTable();
   });
