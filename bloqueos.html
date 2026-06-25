@@ -109,9 +109,6 @@
       const daysBlocked = p.blockedSince
         ? Math.max(1, Math.round((new Date() - new Date(p.blockedSince + 'T00:00:00')) / 86400000))
         : '—';
-      const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-      const dl = p.deadline ? new Date(p.deadline + 'T00:00:00') : null;
-      const deadlineBadgeStr = dl ? `${dl.getDate()} ${months[dl.getMonth()]}` : '—';
       return `
         <div class="block-card${isHighlight ? ' highlight' : ''}" id="card-${p.id}"
              onclick="window.location.href='detalle.html#${p.id}'">
@@ -131,7 +128,7 @@
           <div class="block-card-body">
             <div class="block-card-header">
               <div class="block-card-title">${p.name}</div>
-              <span class="block-deadline-badge">${deadlineBadgeStr}</span>
+              <span class="block-deadline-badge">${deadlineStr}</span>
             </div>
 
             <div class="block-card-meta">
