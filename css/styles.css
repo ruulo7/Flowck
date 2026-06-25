@@ -1068,7 +1068,6 @@ button.badge {
 }
 
 #creativeImgWrap {
-  border-radius: var(--r);
   overflow: hidden;
 }
 
@@ -1076,7 +1075,6 @@ button.badge {
   width: 100%;
   aspect-ratio: 1;
   object-fit: contain;
-  border-radius: var(--r);
   background: #F5F5F3;
   display: block;
 }

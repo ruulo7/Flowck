@@ -157,9 +157,10 @@
     <!-- CENTER: creative + copy -->
     <main class="detail-center" id="detailCenter">
       <div id="creativeWrap" style="display:grid;grid-template-columns:1fr 1fr;align-items:start;gap:20px;padding:32px;align-content:start">
-        <div id="creativeImgWrap">
+        <div id="creativeImgWrap" style="border-radius:8px;overflow:hidden;">
           <img id="creativeImg" class="detail-creative-img" src="" alt=""
-               onerror="this.style.display='none';document.getElementById('uploadZone').style.display='flex'">
+               style="border-radius:8px;"
+               onerror="this.style.cssText='display:none;border-radius:8px;';document.getElementById('uploadZone').style.display='flex'">
           <div id="uploadZone" class="detail-upload-zone" style="display:none;width:100%"
                onclick="document.getElementById('fileInput').click()">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:#aaa">
