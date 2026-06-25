@@ -17,7 +17,15 @@
         <polyline points="15 18 9 12 15 6"/>
       </svg>
     </button>
-    <span class="detail-piece-title" id="detailTitle">—</span>
+    <div class="detail-title-group">
+      <span class="detail-piece-title" id="detailTitle">—</span>
+      <button class="detail-client-link-btn" id="clientLinkBtn" style="display:none" title="Copiar enlace de cliente">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+        </svg>
+      </button>
+    </div>
     <div class="detail-topbar-right">
       <!-- Status dropdown trigger -->
       <div class="status-dropdown" id="statusDropdownWrap">
@@ -271,6 +279,9 @@
 
     /* topbar block badge */
     document.getElementById('topbarBlockBadge').style.display = piece.blocked ? 'inline-flex' : 'none';
+
+    /* client link button */
+    document.getElementById('clientLinkBtn').style.display = piece.cliente ? 'inline-flex' : 'none';
 
     /* sidebar fields */
     document.getElementById('dPendiente').textContent  = piece.pendienteDe || '—';
@@ -696,6 +707,23 @@
 
   /* ── Boot ────────────────────────────────────────── */
   populate();
+
+  /* ── Client link button ──────────────────────────── */
+  document.getElementById('clientLinkBtn').addEventListener('click', function () {
+    const slug = (piece.cliente || '').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    const url  = `https://flowck.vercel.app/cliente/${slug}`;
+    navigator.clipboard.writeText(url).catch(() => {});
+    showToast('Enlace de cliente copiado');
+  });
+
+  function showToast(msg) {
+    const toast = document.getElementById('flowckToast');
+    toast.textContent = msg;
+    toast.classList.add('toast-visible');
+    setTimeout(() => toast.classList.remove('toast-visible'), 2500);
+  }
 </script>
+
+<div id="flowckToast" class="flowck-toast"></div>
 </body>
 </html>
