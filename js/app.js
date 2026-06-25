@@ -51,7 +51,7 @@ function blockBadge(pieceId) {
 }
 
 /* ── Format deadline ────────────────────────────── */
-function formatDeadline(dateStr) {
+function formatDeadline(dateStr, status) {
   if (!dateStr) return '—';
   const d = new Date(dateStr + 'T00:00:00');
   const now = new Date();
@@ -59,7 +59,7 @@ function formatDeadline(dateStr) {
   const diff = Math.round((d - now) / 86400000);
   const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
   const label = `${d.getDate()} ${months[d.getMonth()]}`;
-  const urgent = diff <= 3;
+  const urgent = status !== 'publicada' && diff <= 3;
   return `<span class="cell-deadline${urgent ? ' urgent' : ''}">${label}</span>`;
 }
 

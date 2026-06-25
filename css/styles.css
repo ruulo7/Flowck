@@ -959,7 +959,7 @@ button.badge {
 }
 
 .detail-section-title {
-  font-size: 14px; font-weight: 700; text-transform: uppercase;
+  font-size: 14px; font-weight: 700;
   letter-spacing: 0.4px; color: var(--text-on-dark);
   margin-bottom: 16px;
 }
@@ -1064,12 +1064,12 @@ button.badge {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .detail-creative-img {
   width: 100%;
-  height: 400px;
-  flex-shrink: 0;
+  aspect-ratio: 1;
   object-fit: contain;
   border-radius: var(--r);
   background: #F5F5F3;
@@ -1099,7 +1099,21 @@ button.badge {
 
 .detail-copy-section {
   min-width: 0;
-  width: 100%;
+  align-self: stretch;
+  border: 0.5px solid #E5E5E3;
+  border-radius: var(--r);
+  padding: 16px 16px 16px 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  background: #FFFFFF;
+}
+.detail-copy-section > div:last-child {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 .detail-copy-label {
   font-size: 11px; font-weight: 700; text-transform: uppercase;
@@ -1107,13 +1121,12 @@ button.badge {
 }
 .detail-copy-text {
   font-size: 14px; line-height: 1.6; color: var(--text-primary);
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 12px 16px;
-  height: 116px; overflow-y: scroll; resize: none;
+  background: transparent; border: none;
+  padding: 4px 0 0 0;
+  flex: 1; height: auto; min-height: 0; overflow-y: auto; resize: none;
   font-family: inherit; width: 100%; box-sizing: border-box; display: block;
 }
-.detail-copy-text:focus { outline: none; border-color: #6366F1; box-shadow: 0 0 0 2px rgba(99,102,241,0.15); }
+.detail-copy-text:focus { outline: none; }
 .detail-copy-text::-webkit-scrollbar { width: 6px; }
 .detail-copy-text::-webkit-scrollbar-track { background: transparent; margin: 6px; }
 .detail-copy-text::-webkit-scrollbar-thumb { background: #D1D1CF; border-radius: 3px; }
@@ -1248,7 +1261,8 @@ button.badge {
 /* ── DETAIL: UPLOAD ZONE ────────────────────────── */
 .detail-upload-zone {
   width: 100%;
-  min-height: 260px;
+  aspect-ratio: 1;
+  min-height: unset;
   border: 2px dashed var(--border);
   border-radius: var(--r);
   display: flex;

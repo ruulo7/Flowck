@@ -279,6 +279,11 @@
     if (columnFilters.pendienteDe.length) pieces = pieces.filter(p => columnFilters.pendienteDe.includes(p.pendienteDe));
     if (columnFilters.cliente.length)     pieces = pieces.filter(p => columnFilters.cliente.includes(p.cliente));
     pieces = pieces.slice().sort((a, b) => {
+      if (currentTab === 'todas') {
+        const aPubl = a.status === 'publicada' ? 1 : 0;
+        const bPubl = b.status === 'publicada' ? 1 : 0;
+        if (aPubl !== bPubl) return aPubl - bPubl;
+      }
       if (!a.deadline && !b.deadline) return 0;
       if (!a.deadline) return 1;
       if (!b.deadline) return -1;
@@ -452,8 +457,8 @@
             ${p.blocked ? blockBadge(p.id) : ''}
           </div>
         </td>
-        <td class="col-pend"><span class="cell-pending${(!p.pendienteDe || p.pendienteDe === '—' || p.pendienteDe === 'Sin asignar') ? ' cell-pending-unassigned' : ''}">${p.pendienteDe || '—'}</span></td>
-        <td class="col-dead">${formatDeadline(p.deadline)}</td>
+        <td class="col-pend"><span class="cell-pending${(!p.pendienteDe || p.pendienteDe === '—' || p.pendienteDe === 'Sin asignar') ? ' cell-pending-unassigned' : ''}">${(!p.pendienteDe || p.pendienteDe === 'Sin asignar') ? '—' : p.pendienteDe}</span></td>
+        <td class="col-dead">${formatDeadline(p.deadline, p.status)}</td>
         <td class="col-act" onclick="event.stopPropagation()">
           <button class="actions-btn" onclick="openActionMenu(event, ${p.id})" title="Acciones">···</button>
         </td>
