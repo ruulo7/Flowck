@@ -1067,6 +1067,11 @@ button.badge {
   justify-content: center;
 }
 
+#creativeImgWrap {
+  border-radius: var(--r);
+  overflow: hidden;
+}
+
 .detail-creative-img {
   width: 100%;
   aspect-ratio: 1;
