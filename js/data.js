@@ -99,7 +99,7 @@ const PIECES = [
     channel: 'instagram',
     campaign: 'Verano 2025',
     cliente: 'Lumina Sport',
-    status: 'solicitada',
+    status: 'revision',
     pendienteDe: 'Cliente',
     diseñador: 'Ana R.',
     deadline: _d(3),
