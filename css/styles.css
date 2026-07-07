@@ -293,10 +293,8 @@ body {
   padding: 10px 16px;
   text-align: left;
   font-size: 11px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-weight: 400;
+  color: #ADADAB;
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
 }
@@ -343,7 +341,7 @@ body {
 
 .cell-name {
   display: block;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 13.5px;
   white-space: nowrap;
   overflow: hidden;
@@ -353,7 +351,7 @@ body {
 
 .cell-campaign {
   font-size: 12.5px;
-  color: #505050;
+  color: #383838;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -361,12 +359,12 @@ body {
 
 .cell-pending {
   font-size: 13px;
-  color: #505050;
+  color: #383838;
 }
 
 .cell-deadline {
   font-size: 12.5px;
-  color: #505050;
+  color: #383838;
   white-space: nowrap;
 }
 .cell-deadline.urgent { color: #DC2626; font-weight: 500; }
