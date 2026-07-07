@@ -352,6 +352,7 @@ body {
 
 .cell-campaign {
   font-size: 13px;
+  font-weight: 500;
   color: #222222;
   white-space: nowrap;
   overflow: hidden;
@@ -360,11 +361,13 @@ body {
 
 .cell-pending {
   font-size: 13px;
+  font-weight: 500;
   color: #222222;
 }
 
 .cell-deadline {
   font-size: 13px;
+  font-weight: 500;
   color: #222222;
   white-space: nowrap;
 }
