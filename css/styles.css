@@ -172,7 +172,9 @@ body {
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
+  transition: opacity 0.15s;
 }
+.topbar-avatar:hover { opacity: 0.8; }
 
 /* ── PROFILE DROPDOWN ───────────────────────────── */
 .profile-dropdown {
