@@ -1608,7 +1608,7 @@ button.badge {
 /* ── TOPBAR NOTIFICATION BADGE ──────────────────── */
 .topbar-notif-badge {
   position: absolute;
-  top: 1px; right: 1px;
+  top: -3px; right: 1px;
   min-width: 16px; height: 16px;
   background: #DC2626;
   border-radius: var(--r-full);
