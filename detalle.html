@@ -316,21 +316,29 @@
     }
 
     /* archivo */
+    const isEarlyStatus = ['solicitada','produccion'].includes(piece.status);
     const hasFile = !!piece.fileName;
-    document.getElementById('archivoContent').style.display = hasFile ? 'block' : 'none';
-    if (hasFile) {
+    document.getElementById('archivoContent').style.display = (hasFile || isEarlyStatus) ? 'block' : 'none';
+    if (isEarlyStatus) {
+      document.getElementById('dFormat').textContent  = '—';
+      document.getElementById('dVersion').textContent = '—';
+      document.getElementById('filenameRow').style.display = 'none';
+      document.getElementById('uploadNewVersionWrap').style.display = 'none';
+    } else if (hasFile) {
       document.getElementById('dFormat').textContent  = piece.fileFormat  || '—';
       document.getElementById('dVersion').textContent = piece.fileVersion || '—';
+      document.getElementById('filenameRow').style.display = '';
       document.getElementById('dFileName').textContent = piece.fileName;
+      const canUpload = !['aprobada','publicada'].includes(piece.status);
+      document.getElementById('uploadNewVersionWrap').style.display = canUpload ? 'block' : 'none';
+    } else {
+      document.getElementById('filenameRow').style.display = '';
+      document.getElementById('uploadNewVersionWrap').style.display = 'none';
     }
-
-    /* upload new version: solo si hay archivo y estado permite */
-    const canUpload = hasFile && !['aprobada','publicada'].includes(piece.status);
-    document.getElementById('uploadNewVersionWrap').style.display = canUpload ? 'block' : 'none';
 
     /* creative */
     const img = document.getElementById('creativeImg');
-    if (piece.image) {
+    if (piece.image && !isEarlyStatus) {
       img.src = piece.image;
       img.style.display = 'block';
       document.getElementById('uploadZone').style.display = 'none';
@@ -341,7 +349,7 @@
 
     /* copy — editable, no sobreescribir si el usuario está escribiendo */
     const copyEl = document.getElementById('dCopy');
-    if (document.activeElement !== copyEl) copyEl.value = piece.copy || '';
+    if (document.activeElement !== copyEl) copyEl.value = isEarlyStatus ? '' : (piece.copy || '');
 
     /* comments */
     renderComments();
@@ -349,14 +357,15 @@
 
   function renderComments() {
     const list = document.getElementById('commentsList');
-    document.getElementById('commentsCount').textContent = piece.comments.length;
+    const visibleComments = ['solicitada','produccion'].includes(piece.status) ? [] : piece.comments;
+    document.getElementById('commentsCount').textContent = visibleComments.length;
 
-    if (piece.comments.length === 0) {
+    if (visibleComments.length === 0) {
       list.innerHTML = '<div style="padding:24px 16px;text-align:center;color:#999;font-size:13px">Sin comentarios aún.<br>Sé el primero en comentar.</div>';
       return;
     }
 
-    list.innerHTML = piece.comments.map(c => {
+    list.innerHTML = visibleComments.map(c => {
       const parts = c.author.trim().split(' ');
       const initials = parts.length >= 2
         ? parts[0][0] + parts[parts.length - 1][0]

@@ -432,7 +432,7 @@
     tbody.innerHTML = pieces.map(p => `
       <tr data-id="${p.id}" onclick="goDetail(${p.id})">
         <td class="col-img">
-          ${(p.image || p.thumbnail)
+          ${(p.image || p.thumbnail) && !['solicitada','produccion'].includes(p.status)
             ? `<img class="cell-thumb" src="${p.image || p.thumbnail}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                <div class="thumb-placeholder" style="display:none">
                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
