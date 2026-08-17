@@ -122,7 +122,7 @@ const PIECES = [
   },
   {
     id: 2,
-    name: 'Post Open Day — bienvenida a la comunidad',
+    name: '',
     channel: 'facebook',
     campaign: 'Onboarding',
     cliente: 'Telecom Plus',
@@ -241,7 +241,7 @@ const PIECES = [
   },
   {
     id: 7,
-    name: 'Carrusel feature update — novedades de la app',
+    name: '',
     channel: 'instagram',
     campaign: 'Onboarding',
     cliente: 'Telecom Plus',
@@ -264,7 +264,7 @@ const PIECES = [
   },
   {
     id: 8,
-    name: 'Banner flash sale — calzado y accesorios con descuento',
+    name: '',
     channel: 'linkedin',
     campaign: 'Verano 2025',
     cliente: 'Lumina Sport',
@@ -311,7 +311,7 @@ const PIECES = [
   },
   {
     id: 10,
-    name: 'Post apertura nueva ciudad — campaña de lanzamiento',
+    name: '',
     channel: 'facebook',
     campaign: 'Lanzamiento',
     cliente: 'Verdana Beauty',
@@ -355,7 +355,7 @@ const PIECES = [
   },
   {
     id: 12,
-    name: 'Story sorteo Weekend Escape — pack de viaje verano',
+    name: '',
     channel: 'instagram',
     campaign: 'Verano 2025',
     cliente: 'Lumina Sport',
@@ -426,7 +426,7 @@ const PIECES = [
   },
   {
     id: 15,
-    name: 'Vídeo Weekend Escape — resumen evento Ohana',
+    name: '',
     channel: 'facebook',
     campaign: 'Ohana',
     cliente: 'Nordika Home',

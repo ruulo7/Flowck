@@ -13,7 +13,8 @@
   <!-- Topbar -->
   <header class="detail-topbar">
     <div class="detail-title-group">
-      <span class="detail-piece-title" id="detailTitle">—</span>
+      <input type="text" class="detail-piece-title" id="detailTitle" placeholder="Añadir nombre...">
+      <span id="titleAutosaved" class="title-autosaved">Guardado ✓</span>
       <button class="detail-client-link-btn" id="clientLinkBtn" style="display:none" title="Copiar enlace de cliente">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
@@ -256,8 +257,9 @@
   function populate() {
     piece = getPieceById(pieceId);
 
-    document.title = `${piece.name} — Flowck`;
-    document.getElementById('detailTitle').textContent = piece.name;
+    document.title = piece.name ? `${piece.name} — Flowck` : 'Detalle — Flowck';
+    const titleInput = document.getElementById('detailTitle');
+    if (document.activeElement !== titleInput) titleInput.value = piece.name || '';
 
     /* topbar status badge */
     const btn = document.getElementById('statusDropdownBtn');
@@ -446,6 +448,22 @@
     if (idx !== -1) { pieces[idx].blocked = false; pieces[idx].blockReason = ''; savePieces(pieces); }
     closeResolve();
     populate();
+  });
+
+  /* ── Autosave Nombre ────────────────────────────── */
+  let titleAutosaveTimer = null;
+  document.getElementById('detailTitle').addEventListener('input', function() {
+    clearTimeout(titleAutosaveTimer);
+    titleAutosaveTimer = setTimeout(function() {
+      const val = document.getElementById('detailTitle').value;
+      const pieces = getPieces();
+      const idx = pieces.findIndex(p => p.id === pieceId);
+      if (idx !== -1) { pieces[idx].name = val; savePieces(pieces); piece = pieces[idx]; }
+      document.title = val ? `${val} — Flowck` : 'Detalle — Flowck';
+      const indicator = document.getElementById('titleAutosaved');
+      indicator.classList.add('visible');
+      setTimeout(() => indicator.classList.remove('visible'), 1500);
+    }, 800);
   });
 
   /* ── Autosave Copy ──────────────────────────────── */

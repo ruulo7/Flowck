@@ -928,8 +928,19 @@ button.badge {
 .detail-piece-title {
   font-size: 14px; font-weight: 600; color: var(--text-on-dark);
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  letter-spacing: -0.2px; pointer-events: none;
+  letter-spacing: -0.2px;
+  background: transparent; border: none; outline: none; padding: 0;
+  min-width: 80px; max-width: 100%; cursor: default;
+  font-family: inherit; text-align: left;
 }
+.detail-piece-title:focus { cursor: text; }
+.detail-piece-title::placeholder { color: #9B9B97; font-weight: 600; }
+.title-autosaved {
+  font-size: 11px; color: #9B9B97; opacity: 0;
+  transition: opacity 0.3s; pointer-events: none;
+  white-space: nowrap; flex-shrink: 0;
+}
+.title-autosaved.visible { opacity: 1; }
 
 .detail-client-link-btn {
   display: inline-flex; align-items: center; justify-content: center;
