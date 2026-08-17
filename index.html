@@ -847,6 +847,22 @@
     document.getElementById('sidebar').innerHTML = renderSidebar('piezas');
   });
 
+  /* Reposiciona desplegables del modal al hacer scroll dentro de él */
+  document.getElementById('modalOverlay').querySelector('.modal').addEventListener('scroll', function() {
+    const iPop = IconSelect._pop;
+    if (iPop && iPop.classList.contains('open') && IconSelect._inst) {
+      const r = IconSelect._inst._btn.getBoundingClientRect();
+      iPop.style.top  = (r.bottom + 4) + 'px';
+      iPop.style.left = r.left + 'px';
+    }
+    const cPop = MiniCalendar._pop;
+    if (cPop && cPop.classList.contains('open') && MiniCalendar._inst) {
+      const r = MiniCalendar._inst._btn.getBoundingClientRect();
+      cPop.style.top  = (r.bottom + 4) + 'px';
+      cPop.style.left = r.left + 'px';
+    }
+  });
+
   /* ── Boot ──────────────────────────────────────── */
   renderTable();
 </script>

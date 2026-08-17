@@ -187,6 +187,7 @@ const PIECES = [
     fileName: 'post_expansion_v3.jpg',
     comments: [
       { id: 1, author: 'María G.', role: 'manager', time: 'Ayer', text: 'Publicada el lunes a las 9h. Muy buen engagement en las primeras horas, especialmente en comentarios.', color: '#3A7BD5' },
+      { id: 2, author: 'Cliente', role: 'cliente', time: 'Hace 11 días', text: 'El copy transmite muy bien la expansión y la energía del webinar. Publicadlo, está perfecto.', color: '#6B6B6B' },
     ],
   },
   {
@@ -211,6 +212,7 @@ const PIECES = [
     fileName: 'story_cuenta_atras_v1.mp4',
     comments: [
       { id: 1, author: 'Carlos R.', role: 'produccion', time: 'Hace 4 días', text: 'Enviada para revisión del cliente. El estilo TikTok encaja muy bien con su tono de marca. Pendiente de respuesta.', color: '#059669' },
+      { id: 2, author: 'Cliente', role: 'cliente', time: 'Hace 2h', text: 'El hashtag #verano2025 está bien, añadid también #luminasport. El copy y el ritmo del vídeo son buenos, podéis seguir con la producción.', color: '#6B6B6B' },
     ],
   },
   {
@@ -234,6 +236,7 @@ const PIECES = [
     comments: [
       { id: 1, author: 'María G.', role: 'manager', time: 'Ayer', text: 'Aprobada. La línea eco encaja perfectamente con los valores de la marca este trimestre. Julia puede proceder con el envío el 1 de julio.', color: '#3A7BD5' },
       { id: 2, author: 'Julia B.', role: 'produccion', time: 'Ayer', text: 'Perfecto, lo programo para el 1 de julio a las 8:00h.', color: '#7C3AED' },
+      { id: 3, author: 'Cliente', role: 'cliente', time: 'Hace 2 días', text: 'El diseño comunica muy bien la propuesta eco. La estructura es clara y el tono encaja con lo que queremos proyectar este mes. Aprobado.', color: '#6B6B6B' },
     ],
   },
   {
@@ -301,6 +304,7 @@ const PIECES = [
     comments: [
       { id: 1, author: 'María G.', role: 'manager', time: 'Hace 1 día', text: 'Los subtítulos del rooftop tienen errores ortográficos en varios momentos. Necesita corrección antes de aprobar.', color: '#3A7BD5' },
       { id: 2, author: 'Carlos R.', role: 'produccion', time: 'Hace 22 h', text: 'Correcciones enviadas al equipo de producción. Pendiente la nueva versión con los subtítulos revisados.', color: '#059669' },
+      { id: 3, author: 'Cliente', role: 'cliente', time: 'Hace 18h', text: 'El montaje del evento está muy bien logrado. Revisad los subtítulos del tramo 0:45–1:10, hay errores tipográficos. En cuanto estén corregidos, aprobamos.', color: '#6B6B6B' },
     ],
   },
   {
@@ -343,6 +347,7 @@ const PIECES = [
     fileName: 'ads_google_v1.png',
     comments: [
       { id: 1, author: 'María G.', role: 'manager', time: 'Hace 2 días', text: 'Aprobados. El visual de analytics encaja perfecto con el mensaje de Telecom Plus. Activar campañas el lunes 30 a primera hora.', color: '#3A7BD5' },
+      { id: 2, author: 'Cliente', role: 'cliente', time: 'Hace 3 días', text: 'El visual transmite exactamente lo que buscábamos: datos claros y mensaje de confianza. Perfecto para activar.', color: '#6B6B6B' },
     ],
   },
   {
@@ -390,6 +395,7 @@ const PIECES = [
     comments: [
       { id: 1, author: 'María G.', role: 'manager', time: 'Hace 3 días', text: 'El paso 3 no refleja bien cómo funciona la sesión de trabajo colaborativo. Hay que revisar el flujo con el equipo de producto.', color: '#3A7BD5' },
       { id: 2, author: 'Carlos R.', role: 'produccion', time: 'Hace 2 días', text: 'Solicitado al equipo de producto. Esperando confirmación del flujo correcto para actualizar la infografía.', color: '#059669' },
+      { id: 3, author: 'Cliente', role: 'cliente', time: 'Hace 4 días', text: 'Los pasos 1, 2 y 4 están perfectos. El paso 3 no refleja bien cómo funciona la sesión colaborativa — necesita revisión antes de que podamos publicarlo.', color: '#6B6B6B' },
     ],
   },
   {
@@ -410,7 +416,9 @@ const PIECES = [
     fileFormat: 'JPG',
     fileVersion: 'v1',
     fileName: 'banner_nueva_web_v1.jpg',
-    comments: [],
+    comments: [
+      { id: 1, author: 'Cliente', role: 'cliente', time: 'Hace 8 días', text: 'El estilo lifestyle encaja a la perfección con el relanzamiento. La imagen y el copy transmiten exactamente la energía que queríamos. Podéis publicarlo.', color: '#6B6B6B' },
+    ],
   },
   {
     id: 15,

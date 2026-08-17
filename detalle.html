@@ -12,11 +12,6 @@
 
   <!-- Topbar -->
   <header class="detail-topbar">
-    <button class="detail-back-btn" onclick="history.back()" title="Volver">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-        <polyline points="15 18 9 12 15 6"/>
-      </svg>
-    </button>
     <div class="detail-title-group">
       <span class="detail-piece-title" id="detailTitle">—</span>
       <button class="detail-client-link-btn" id="clientLinkBtn" style="display:none" title="Copiar enlace de cliente">
@@ -371,7 +366,7 @@
         <div class="comment-header">
           <div class="comment-avatar" style="background:${getAuthorColor(c.author)}">${initials.toUpperCase()}</div>
           <span class="comment-author">${c.author}</span>
-          <span class="comment-role-badge role-${c.role}">${roleLabel(c.role)}</span>${c.author === 'María G.' ? ' <span style="color:#9B9B97;font-size:11.5px">(Tú)</span>' : ''}
+          ${c.role !== 'cliente' ? `<span class="comment-role-badge role-${c.role}">${roleLabel(c.role)}</span>` : ''}${c.author === 'María G.' ? ' <span style="color:#9B9B97;font-size:11.5px">(Tú)</span>' : ''}
           <span class="comment-time">${c.time}</span>
         </div>
         <div class="comment-text">${c.text}</div>
