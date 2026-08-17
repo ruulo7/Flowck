@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 264.583 264.583">
+  <defs>
+    <radialGradient id="ig-a" cx=".498" cy="1.002" r="1.103" gradientTransform="matrix(236.099 0 0 236.049 14.241 14.217)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fed576"/>
+      <stop offset=".263" stop-color="#f47133"/>
+      <stop offset=".609" stop-color="#bc3081"/>
+      <stop offset="1" stop-color="#4c63d2"/>
+    </radialGradient>
+    <radialGradient id="ig-b" cx=".499" cy=".999" r=".859" gradientTransform="matrix(126.187 0 0 44.994 69.199 180.032)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fed576"/>
+      <stop offset=".263" stop-color="#f47133"/>
+      <stop offset=".609" stop-color="#bc3081"/>
+      <stop offset="1" stop-color="#4c63d2"/>
+    </radialGradient>
+    <radialGradient xlink:href="#ig-a" id="ig-c" r="1.155" gradientTransform="matrix(236.099 0 0 236.049 14.241 14.217)"/>
+    <radialGradient xlink:href="#ig-a" id="ig-d" r="1.155" gradientTransform="matrix(236.099 0 0 236.049 14.241 14.217)"/>
+    <radialGradient xlink:href="#ig-a" id="ig-e" r="1.155" gradientTransform="matrix(236.099 0 0 236.049 14.241 14.217)"/>
+    <radialGradient xlink:href="#ig-a" id="ig-f" r="1.155" gradientTransform="matrix(236.099 0 0 236.049 14.241 14.217)"/>
+    <radialGradient xlink:href="#ig-a" id="ig-g" r="1.155" gradientTransform="matrix(236.099 0 0 236.049 14.241 14.217)"/>
+    <radialGradient xlink:href="#ig-b" id="ig-h" gradientTransform="matrix(126.187 0 0 44.994 69.199 180.032)"/>
+  </defs>
+  <rect width="264.583" height="264.583" rx="59.116" ry="59.116" fill="url(#ig-a)"/>
+  <rect width="264.583" height="264.583" rx="59.116" ry="59.116" fill="url(#ig-b)"/>
+  <path d="M183.884 80.716a12.422 12.422 0 1 0 12.422 12.422 12.42 12.42 0 0 0-12.422-12.422Z" fill="#fff"/>
+  <path d="M132.291 88.382A43.909 43.909 0 1 0 176.2 132.291 43.909 43.909 0 0 0 132.291 88.382Zm0 72.376a28.467 28.467 0 1 1 28.467-28.467 28.467 28.467 0 0 1-28.467 28.467Z" fill="#fff"/>
+  <path d="M164.017 22.382H100.566A78.253 78.253 0 0 0 22.382 100.566v63.451a78.253 78.253 0 0 0 78.184 78.184h63.451a78.253 78.253 0 0 0 78.184-78.184v-63.451a78.253 78.253 0 0 0-78.184-78.184Zm52.8 141.635a52.857 52.857 0 0 1-52.8 52.8H100.566a52.857 52.857 0 0 1-52.8-52.8v-63.451a52.857 52.857 0 0 1 52.8-52.8h63.451a52.857 52.857 0 0 1 52.8 52.8Z" fill="#fff"/>
+</svg>

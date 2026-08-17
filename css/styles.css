@@ -137,6 +137,8 @@ body {
   display: flex; align-items: center; justify-content: center;
   background: transparent;
   color: var(--text-on-dark-muted);
+  height: 26px;
+  line-height: 0;
   border: none;
   cursor: pointer;
   transition: color 0.12s;
