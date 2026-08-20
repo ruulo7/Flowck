@@ -1,3 +1,11 @@
+const DATA_VERSION = 3;
+(function() {
+  if (parseInt(localStorage.getItem('flowck_data_version') || '0') !== DATA_VERSION) {
+    localStorage.removeItem('flowck_pieces');
+    localStorage.setItem('flowck_data_version', String(DATA_VERSION));
+  }
+})();
+
 const STATUS_LABELS = {
   solicitada: 'Solicitada',
   produccion: 'En producción',
