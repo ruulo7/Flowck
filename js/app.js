@@ -371,20 +371,27 @@ function showBlockPopover(e, pieceId) {
   const pop = document.getElementById('blockPopover');
   if (!pop) return;
 
+  if (pop.classList.contains('open')) { pop.classList.remove('open'); return; }
+
   document.getElementById('popPieceName').textContent = piece.name;
   document.getElementById('popReason').textContent = piece.blockReason;
   document.getElementById('popPending').textContent = piece.pendienteDe;
   document.getElementById('popDeadline').textContent = formatDeadlinePlain(piece.deadline);
   document.getElementById('popViewLink').href = `bloqueos.html#h${pieceId}`;
 
+  closeAll();
+
   const rect = e.target.getBoundingClientRect();
-  pop.style.top = (rect.bottom + 8) + 'px';
   const left = Math.min(rect.left, window.innerWidth - 310);
   pop.style.left = Math.max(left, 10) + 'px';
 
-  if (pop.classList.contains('open')) { pop.classList.remove('open'); return; }
-  closeAll();
+  pop.style.visibility = 'hidden';
   pop.classList.add('open');
+  const popH = pop.offsetHeight;
+  pop.style.visibility = '';
+
+  const spaceBelow = window.innerHeight - rect.bottom;
+  pop.style.top = (spaceBelow < popH + 8 ? rect.top - popH - 8 : rect.bottom + 8) + 'px';
 }
 
 function formatDeadlinePlain(dateStr) {
