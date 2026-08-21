@@ -619,7 +619,7 @@ body {
   border: 1px solid var(--border);
   border-radius: var(--r);
   padding: 16px 18px;
-  width: 290px;
+  width: auto;
   box-shadow: 0 12px 36px rgba(0,0,0,0.13);
   z-index: 350;
   display: none;
