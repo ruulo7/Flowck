@@ -830,6 +830,7 @@ body {
 }
 
 .block-reason-box {
+  margin-top: auto;
   background: #FFF5F5;
   border-radius: 6px;
   padding: 11px 12px;
