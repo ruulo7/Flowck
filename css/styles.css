@@ -780,11 +780,11 @@ body {
 }
 .block-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.09); }
 @keyframes block-highlight-pulse {
-  0%, 100% { border-color: #EF4444; box-shadow: 0 0 0 3px rgba(220,38,38,0.22); }
-  50%       { border-color: rgba(239,68,68,0.25); box-shadow: 0 0 0 3px rgba(220,38,38,0.04); }
+  0%, 100% { border-color: #EF4444; box-shadow: 0 0 0 5px rgba(220,38,38,0.25); }
+  50%       { border-color: rgba(239,68,68,0.25); box-shadow: 0 0 0 5px rgba(220,38,38,0.04); }
 }
 .block-card.highlight {
-  background: #F0F0F0;
+  border-width: 2px;
   animation: block-highlight-pulse 1.2s ease-in-out infinite;
 }
 
