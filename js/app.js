@@ -373,10 +373,6 @@ function showBlockPopover(e, pieceId) {
 
   if (pop.classList.contains('open')) { pop.classList.remove('open'); return; }
 
-  document.getElementById('popPieceName').textContent = piece.name;
-  document.getElementById('popReason').textContent = piece.blockReason;
-  document.getElementById('popPending').textContent = piece.pendienteDe;
-  document.getElementById('popDeadline').textContent = formatDeadlinePlain(piece.deadline);
   document.getElementById('popViewLink').href = `bloqueos.html#h${pieceId}`;
 
   closeAll();

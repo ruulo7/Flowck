@@ -636,7 +636,7 @@ body {
 }
 .block-popover-meta { font-size: 12px; color: var(--text-secondary); margin-bottom: 14px; }
 .block-popover-meta strong { color: var(--text-primary); font-weight: 500; }
-.block-popover-footer { display: flex; justify-content: flex-end; }
+.block-popover-footer { display: flex; justify-content: flex-start; }
 #popViewLink:hover { background: #EF4444 !important; border-color: #EF4444 !important; }
 
 /* ── CHANNEL ICONS ─────────────────────────────── */
