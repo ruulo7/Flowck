@@ -717,7 +717,7 @@
     document.getElementById('fCampaign').value = (piece.campaign && piece.campaign !== '—') ? piece.campaign : '';
     document.getElementById('fCliente').value  = piece.cliente || '';
     document.getElementById('fBrief').value    = piece.brief || '';
-    document.getElementById('fCopy').value     = piece.copy || '';
+    document.getElementById('fCopy').value     = ['solicitada','produccion'].includes(piece.status) ? '' : (piece.copy || '');
     channelSelect.setValue(piece.channel, false);
     cal.setValue(piece.deadline || '');
     ownerSelect.setValue((piece.pendienteDe && piece.pendienteDe !== '—') ? piece.pendienteDe : 'Sin asignar', false);
@@ -821,7 +821,7 @@
 
       const owner = modalHasFile ? (orig.pendienteDe || 'Sin asignar') : (ownerSelect.getValue() || 'Sin asignar');
       const brief = modalHasFile ? (orig.brief || '') : document.getElementById('fBrief').value.trim();
-      const copy  = modalHasFile ? document.getElementById('fCopy').value.trim() : (orig.copy || '');
+      const copy  = document.getElementById('fCopy').value.trim();
 
       let fileName, fileFormat, thumbnail, image;
       if (modalFileData) {
