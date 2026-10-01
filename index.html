@@ -113,7 +113,7 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Campaña <span class="form-label-optional">(opcional)</span></label>
+        <label class="form-label">Campaña</label>
         <input class="form-input" id="fCampaign" type="text" placeholder="Ej. Verano 2025">
       </div>
     </div>
@@ -121,7 +121,7 @@
     <!-- Cliente + Deadline: siempre visibles -->
     <div class="form-row">
       <div class="form-group">
-        <label class="form-label">Cliente <span class="form-label-optional">(opcional)</span></label>
+        <label class="form-label">Cliente</label>
         <input class="form-input" id="fCliente" type="text" placeholder="Ej. Acme Corp">
       </div>
       <div class="form-group">
@@ -138,7 +138,7 @@
     <!-- SIN archivo: Asignado a + Brief -->
     <div id="sectionNoFile">
       <div class="form-group">
-        <label class="form-label">Asignado a <span class="form-label-optional">(opcional)</span></label>
+        <label class="form-label">Asignado a</label>
         <div class="select-wrap">
           <button type="button" class="select-btn" id="fOwnerBtn">
             <span class="select-btn-content">Sin asignar</span>
@@ -147,7 +147,7 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Brief <span class="form-label-optional">(opcional)</span></label>
+        <label class="form-label">Brief</label>
         <textarea class="form-textarea" id="fBrief" placeholder="Describe el objetivo, tono y referencias de la pieza…" style="min-height:70px"></textarea>
       </div>
     </div>
@@ -157,8 +157,8 @@
     <!-- Zona de archivo -->
     <div id="fFileZone" class="modal-file-zone">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-      <span>Arrastra o <strong style="color:var(--text-primary)">haz clic</strong> para subir el archivo creativo</span>
-      <span class="modal-file-zone-hint">PNG, JPG, MP4, PDF — opcional</span>
+      <span>Arrastra o <strong style="color:var(--text-primary)">haz clic</strong> para subir un archivo</span>
+      <span class="modal-file-zone-hint">PNG, JPG, MP4, PDF</span>
       <input type="file" id="fFile" accept="image/*,video/*,.pdf" style="display:none">
     </div>
     <div id="fFilePreview" class="modal-file-preview" style="display:none">
@@ -173,11 +173,12 @@
     <!-- CON archivo: Copy -->
     <div id="sectionWithFile" style="display:none">
       <div class="form-group">
-        <label class="form-label">Copy <span class="form-label-optional">(opcional)</span></label>
+        <label class="form-label">Copy</label>
         <textarea class="form-textarea" id="fCopy" placeholder="Texto principal de la pieza creativa…" style="min-height:70px"></textarea>
       </div>
     </div>
 
+    <p class="form-required-note"><span class="required-star">*</span> Campos obligatorios</p>
     <div class="modal-footer">
       <button class="btn btn-secondary" id="modalCancel">Cancelar</button>
       <button class="btn btn-primary" id="modalSave" disabled>Crear solicitud</button>
