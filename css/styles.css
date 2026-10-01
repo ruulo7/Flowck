@@ -1338,7 +1338,7 @@ button.badge {
   transition: border-color 0.12s;
 }
 .cal-input-btn:hover { border-color: #b8b8b6; }
-.cal-input-btn.empty .cal-btn-text { color: var(--text-secondary); }
+.cal-input-btn.empty .cal-btn-text { color: #9A9A9A; }
 .cal-input-btn svg { flex-shrink: 0; color: var(--text-secondary); margin-left: 8px; }
 
 .cal-popover {
@@ -1419,7 +1419,7 @@ button.badge {
   transition: border-color 0.12s;
 }
 .select-btn:hover { border-color: #b8b8b6; }
-.select-btn.empty .select-btn-content { color: var(--text-secondary); }
+.select-btn.empty .select-btn-content { color: #9A9A9A; }
 .select-btn-content { display: inline-flex; align-items: center; gap: 8px; overflow: hidden; white-space: nowrap; }
 .select-chevron { flex-shrink: 0; color: var(--text-secondary); margin-left: 8px; }
 
