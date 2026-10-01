@@ -566,6 +566,8 @@ body {
 .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: #999; }
 .form-textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
 .form-input::placeholder, .form-textarea::placeholder { color: #9A9A9A; }
+#fCopy { scrollbar-width: none; -ms-overflow-style: none; }
+#fCopy::-webkit-scrollbar { display: none; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .form-label-optional { font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--text-secondary); font-size: 11px; margin-left: 3px; }
 .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px; }
@@ -1405,6 +1407,23 @@ button.badge {
   vertical-align: middle;
 }
 .th-filter-badge:empty { display: none; }
+
+/* ── COMBOBOX (input + dropdown filtrable) ──────── */
+.combo-btn {
+  width: 100%; display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 11px;
+  border: 1px solid var(--border); border-radius: var(--r-sm);
+  background: var(--surface);
+  font-size: 13.5px;
+  transition: border-color 0.12s;
+}
+.combo-btn:hover        { border-color: #b8b8b6; }
+.combo-btn:focus-within { border-color: #999; }
+.combo-input {
+  flex: 1; border: none; background: transparent; outline: none;
+  font-size: 13.5px; color: var(--text-primary); font-family: inherit; min-width: 0;
+}
+.combo-input::placeholder { color: #9A9A9A; }
 
 /* ── ICON SELECT (dropdown puro icono+texto) ────── */
 .select-wrap { position: relative; }

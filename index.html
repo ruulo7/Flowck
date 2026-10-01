@@ -114,7 +114,12 @@
       </div>
       <div class="form-group">
         <label class="form-label">Campaña</label>
-        <input class="form-input" id="fCampaign" type="text" placeholder="Ej. Verano 2025">
+        <div class="select-wrap">
+          <div class="combo-btn">
+            <input type="text" class="combo-input" id="fCampaign" placeholder="Selecciona o escribe" autocomplete="off">
+            <svg class="select-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -122,7 +127,12 @@
     <div class="form-row">
       <div class="form-group">
         <label class="form-label">Cliente</label>
-        <input class="form-input" id="fCliente" type="text" placeholder="Ej. Acme Corp">
+        <div class="select-wrap">
+          <div class="combo-btn">
+            <input type="text" class="combo-input" id="fCliente" placeholder="Selecciona o escribe" autocomplete="off">
+            <svg class="select-chevron" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
       </div>
       <div class="form-group">
         <label class="form-label">Deadline <span class="required-star">*</span></label>
@@ -170,18 +180,16 @@
       <button type="button" class="modal-file-preview-remove" id="fFileRemove" title="Quitar archivo">✕</button>
     </div>
 
-    <!-- CON archivo: Copy -->
-    <div id="sectionWithFile" style="display:none">
-      <div class="form-group">
-        <label class="form-label">Copy</label>
-        <textarea class="form-textarea" id="fCopy" placeholder="Texto principal de la pieza creativa…" style="min-height:70px"></textarea>
-      </div>
+    <!-- Copy: siempre visible -->
+    <div class="form-group">
+      <label class="form-label">Copy</label>
+      <textarea class="form-textarea" id="fCopy" placeholder="Texto principal de la pieza creativa…" style="min-height:70px"></textarea>
     </div>
 
     <p class="form-required-note"><span class="required-star">*</span> Campos obligatorios</p>
     <div class="modal-footer">
       <button class="btn btn-secondary" id="modalCancel">Cancelar</button>
-      <button class="btn btn-primary" id="modalSave" disabled>Crear solicitud</button>
+      <button class="btn btn-primary" id="modalSave" disabled>Añadir pieza</button>
     </div>
   </div>
 </div>
@@ -606,6 +614,61 @@
   );
   ownerSelect.setValue('Sin asignar', false);
 
+  /* ── ComboSelect: input con dropdown filtrable ── */
+  class ComboSelect {
+    constructor(inputEl, getOptions) {
+      this._input = inputEl;
+      this._getOptions = getOptions;
+      this._pop = null;
+      inputEl.addEventListener('focus', () => this._filter());
+      inputEl.addEventListener('input', () => this._filter());
+      inputEl.addEventListener('blur',  () => setTimeout(() => this._hide(), 150));
+      inputEl.addEventListener('keydown', e => { if (e.key === 'Escape') { this._hide(); inputEl.blur(); } });
+    }
+    _getPop() {
+      if (!this._pop) {
+        this._pop = document.createElement('div');
+        this._pop.className = 'select-popover';
+        document.body.appendChild(this._pop);
+      }
+      return this._pop;
+    }
+    _filter() {
+      const q = this._input.value.toLowerCase().trim();
+      const opts = this._getOptions().filter(o => !q || o.toLowerCase().includes(q));
+      if (!opts.length) { this._hide(); return; }
+      const pop = this._getPop();
+      pop.innerHTML = opts.map(o =>
+        `<div class="select-option-row" data-v="${o.replace(/"/g,'&quot;')}">${o}</div>`
+      ).join('');
+      pop.querySelectorAll('[data-v]').forEach(row => {
+        row.addEventListener('mousedown', e => {
+          e.preventDefault();
+          this._input.value = row.dataset.v;
+          this._hide();
+        });
+      });
+      const r = this._input.closest('.combo-btn').getBoundingClientRect();
+      pop.style.top   = (r.bottom + 4) + 'px';
+      pop.style.left  = r.left + 'px';
+      pop.style.width = r.width + 'px';
+      pop.classList.add('open');
+    }
+    _hide() { if (this._pop) this._pop.classList.remove('open'); }
+    getValue() { return this._input.value.trim(); }
+    setValue(v) { this._input.value = v || ''; }
+    reset()     { this._input.value = ''; }
+  }
+
+  function getUniqueCampaigns() {
+    return [...new Set(getPieces().map(p => p.campaign).filter(c => c && c !== '—'))];
+  }
+  function getUniqueClientes() {
+    return [...new Set(getPieces().map(p => p.cliente).filter(c => c && c !== '—'))];
+  }
+  const campaignCombo = new ComboSelect(document.getElementById('fCampaign'), getUniqueCampaigns);
+  const clienteCombo  = new ComboSelect(document.getElementById('fCliente'),  getUniqueClientes);
+
   function validateModal() {
     const name    = document.getElementById('fName').value.trim();
     const channel = channelSelect.getValue();
@@ -617,11 +680,8 @@
 
   function setModalMode(withFile) {
     modalHasFile = withFile;
-    document.getElementById('sectionNoFile').style.display  = withFile ? 'none'  : 'block';
-    document.getElementById('sectionWithFile').style.display = withFile ? 'block' : 'none';
-    document.getElementById('modalSave').textContent = editingPieceId
-      ? 'Guardar cambios'
-      : (withFile ? 'Añadir pieza' : 'Crear solicitud');
+    document.getElementById('sectionNoFile').style.display = withFile ? 'none' : 'block';
+    document.getElementById('modalSave').textContent = editingPieceId ? 'Guardar cambios' : 'Añadir pieza';
     validateModal();
   }
 
