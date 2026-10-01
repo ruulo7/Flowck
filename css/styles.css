@@ -568,7 +568,7 @@ body {
 .form-input::placeholder, .form-textarea::placeholder { color: #9A9A9A; }
 #fCopy { scrollbar-width: none; -ms-overflow-style: none; }
 #fCopy::-webkit-scrollbar { display: none; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
 .form-label-optional { font-weight: 400; text-transform: none; letter-spacing: 0; color: var(--text-secondary); font-size: 11px; margin-left: 3px; }
 .modal-footer { display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px; }
 
@@ -1452,8 +1452,11 @@ button.badge {
   padding: 4px;
   max-height: 280px;
   overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   display: none;
 }
+.select-popover::-webkit-scrollbar { display: none; }
 .select-popover.open { display: block; }
 .combo-popover { position: absolute; top: calc(100% + 4px); left: 0; width: 100%; }
 .select-option-row {
