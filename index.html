@@ -183,7 +183,7 @@
     <!-- Copy: siempre visible -->
     <div class="form-group">
       <label class="form-label">Copy</label>
-      <textarea class="form-textarea" id="fCopy" placeholder="Texto principal de la pieza creativa…" style="min-height:70px"></textarea>
+      <textarea class="form-textarea" id="fCopy" placeholder="Escribe el texto de la pieza..." style="min-height:70px"></textarea>
     </div>
 
     <p class="form-required-note"><span class="required-star">*</span> Campos obligatorios</p>
@@ -619,17 +619,20 @@
     constructor(inputEl, getOptions) {
       this._input = inputEl;
       this._getOptions = getOptions;
+      this._wrap = inputEl.closest('.select-wrap');
       this._pop = null;
       inputEl.addEventListener('focus', () => this._filter());
       inputEl.addEventListener('input', () => this._filter());
       inputEl.addEventListener('blur',  () => setTimeout(() => this._hide(), 150));
       inputEl.addEventListener('keydown', e => { if (e.key === 'Escape') { this._hide(); inputEl.blur(); } });
+      const chevron = inputEl.closest('.combo-btn').querySelector('.select-chevron');
+      if (chevron) chevron.addEventListener('click', () => inputEl.focus());
     }
     _getPop() {
       if (!this._pop) {
         this._pop = document.createElement('div');
-        this._pop.className = 'select-popover';
-        document.body.appendChild(this._pop);
+        this._pop.className = 'select-popover combo-popover';
+        this._wrap.appendChild(this._pop);
       }
       return this._pop;
     }
@@ -648,10 +651,6 @@
           this._hide();
         });
       });
-      const r = this._input.closest('.combo-btn').getBoundingClientRect();
-      pop.style.top   = (r.bottom + 4) + 'px';
-      pop.style.left  = r.left + 'px';
-      pop.style.width = r.width + 'px';
       pop.classList.add('open');
     }
     _hide() { if (this._pop) this._pop.classList.remove('open'); }
